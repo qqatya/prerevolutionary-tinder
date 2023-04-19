@@ -15,6 +15,7 @@ public class ProfileController {
 
     /**
      * Создание анкеты
+     *
      * @param profile Объект анкеты
      */
     @PostMapping
@@ -25,6 +26,7 @@ public class ProfileController {
 
     /**
      * Получение анкеты по идентификатору
+     *
      * @param userId Идентификатор пользователя
      * @return Объект анкеты
      */
@@ -35,6 +37,7 @@ public class ProfileController {
 
     /**
      * Обновление анкеты
+     *
      * @param profile Объект анкеты
      */
     @PutMapping(value = "/update/{userId}")
@@ -45,6 +48,7 @@ public class ProfileController {
 
     /**
      * Получение картинки с описанием анкеты
+     *
      * @param userId Идентификатор пользователя
      * @return Байтовый массив, содержащий изображение
      */
