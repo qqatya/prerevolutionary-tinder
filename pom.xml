@@ -9,6 +9,7 @@
     <modules>
         <module>prerevolutionary-tinder-tgbot-client</module>
         <module>prerevolutionary-tinder-server</module>
+        <module>prerevolutionary-tinder-image-creator</module>
     </modules>
 
     <properties>

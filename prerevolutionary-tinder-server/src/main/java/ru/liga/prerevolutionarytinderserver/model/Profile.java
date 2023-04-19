@@ -10,7 +10,7 @@ import ru.liga.prerevolutionarytinderserver.enums.GenderEnum;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Profile {
-    private long userId;
+    private Long userId;
     @NonNull
     private String name;
     @NonNull
