@@ -26,7 +26,7 @@ INSERT INTO pretinder.profile (user_id, name, gender, search, description, delet
 VALUES (10, 'Светлана', 'FEMALE', 'ALL', '20 лет, образованная барышня ищет мужа миллионера, непременно пожилого, во избежание неверности',
 null);
 
-INSERT INTO pretinder.favorites (user_id, favorite_user_id)
+INSERT INTO pretinder.user_favorite (user_id, favorite_user_id)
 VALUES (1, 2),
        (1, 3),
        (1, 4),

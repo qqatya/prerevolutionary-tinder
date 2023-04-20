@@ -18,14 +18,14 @@ public class FavoritesRepositoryImpl implements FavoritesRepository {
     private static final String SQL_GET_FAVORITES_BY_USER_ID = "select user_id, name, gender, search, description, "
             + "search "
             + "from pretinder.profile "
-            + "where user_id in (select favorite_user_id from pretinder.favorites where user_id = :user_id) "
+            + "where user_id in (select favorite_user_id from pretinder.user_favorite where user_id = :user_id) "
             + "order by :order ";
     private static final String SQL_GET_USERS_HAVING_USER_ID_AS_FAVORITE = "select user_id, name, gender, search, "
             + "description, search "
             + "from pretinder.profile "
-            + "where user_id in (select user_id from pretinder.favorites where favorite_user_id = :favorite_user_id) "
+            + "where user_id in (select user_id from pretinder.user_favorite where favorite_user_id = :favorite_user_id) "
             + "order by :order ";
-    
+
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final ProfileMapper profileMapper;
 

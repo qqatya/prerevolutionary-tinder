@@ -23,7 +23,7 @@ COMMENT ON COLUMN pretinder.profile.description is 'Описание анкет�
 COMMENT ON COLUMN pretinder.profile.create_dttm is 'Дата и время создания записи';
 COMMENT ON COLUMN pretinder.profile.delete_dttm is 'Дата и время удаления записи';
 
-CREATE TABLE pretinder.favorites (
+CREATE TABLE pretinder.user_favorite (
     id                  SERIAL                          NOT NULL,
     user_id             integer                         NOT NULL,
     favorite_user_id    integer                         NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE pretinder.favorites (
     FOREIGN KEY (user_id) REFERENCES profile(user_id) ON DELETE CASCADE
 );
 
-COMMENT ON TABLE pretinder.favorites is 'Любимцы пользователей';
-COMMENT ON COLUMN pretinder.favorites.id is 'Уникальный идентификатор (первичный ключ)';
-COMMENT ON COLUMN pretinder.favorites.user_id is 'Идентификатор пользователя';
-COMMENT ON COLUMN pretinder.favorites.favorite_user_id is 'Идентификатор любимца';
+COMMENT ON TABLE pretinder.user_favorite is 'Любимцы пользователей';
+COMMENT ON COLUMN pretinder.user_favorite.id is 'Уникальный идентификатор (первичный ключ)';
+COMMENT ON COLUMN pretinder.user_favorite.user_id is 'Идентификатор пользователя';
+COMMENT ON COLUMN pretinder.user_favorite.favorite_user_id is 'Идентификатор любимца';
