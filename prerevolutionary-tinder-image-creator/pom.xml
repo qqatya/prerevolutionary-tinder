@@ -14,13 +14,14 @@
         <java.version>17</java.version>
         <maven-assembly.version>2.4.1</maven-assembly.version>
         <ij.version>1.51h</ij.version>
+        <TextImageGen.version>1.9</TextImageGen.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>net.imagej</groupId>
-            <artifactId>ij</artifactId>
-            <version>1.51h</version>
+            <groupId>org.docx4j.org.capaxit.textimage</groupId>
+            <artifactId>TextImageGen</artifactId>
+            <version>${TextImageGen.version}</version>
         </dependency>
     </dependencies>
 
