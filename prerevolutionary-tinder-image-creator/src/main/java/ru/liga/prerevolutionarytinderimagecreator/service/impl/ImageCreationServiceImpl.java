@@ -35,7 +35,7 @@ public class ImageCreationServiceImpl implements ImageCreationService {
     private static final int LEFT = 50;
     private static final int RIGHT = 50;
     private static final int TOP = 80;
-    private static final int BOTTOM = 130;
+    private static final int BOTTOM = 80;
 
     /**
      * Шрифты и фон
@@ -96,9 +96,9 @@ public class ImageCreationServiceImpl implements ImageCreationService {
         Font currentBold = bold;
         Font currentPlain = plain;
 
-        while (boldTextHeight < maxTextHeight && plainTextHeight < maxTextHeight) {
+        while (boldTextHeight + plainTextHeight < maxTextHeight) {
             int currentPlainSize = currentPlain.getSize() + 1;
-            int currentBoldSize = (int) (currentPlainSize * 1.6);
+            int currentBoldSize = (int) (currentPlainSize * 1.8);
 
             currentBold = new Font(currentBold.getFontName(), currentBold.getStyle(), currentBoldSize);
             currentPlain = new Font(currentBold.getFontName(), currentBold.getStyle(), currentPlainSize);
