@@ -13,7 +13,6 @@
     <properties>
         <java.version>17</java.version>
         <maven-assembly.version>2.4.1</maven-assembly.version>
-        <ij.version>1.51h</ij.version>
         <TextImageGen.version>1.9</TextImageGen.version>
     </properties>
 
