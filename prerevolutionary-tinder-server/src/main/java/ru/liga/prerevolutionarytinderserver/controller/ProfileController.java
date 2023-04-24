@@ -5,10 +5,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import ru.liga.prerevolutionarytinderserver.model.PageableFavorite;
-import ru.liga.prerevolutionarytinderserver.model.PageableProfile;
-import ru.liga.prerevolutionarytinderserver.model.Profile;
+import ru.liga.prerevolutionarytinderserver.model.*;
 import ru.liga.prerevolutionarytinderserver.service.FavoritesService;
+import ru.liga.prerevolutionarytinderserver.service.LikeService;
 import ru.liga.prerevolutionarytinderserver.service.ProfileService;
 import ru.liga.prerevolutionarytinderserver.service.SearchService;
 
@@ -19,6 +18,7 @@ public class ProfileController {
     private final ProfileService profileService;
     private final FavoritesService favoritesService;
     private final SearchService searchService;
+    private final LikeService likeService;
 
     /**
      * Создание анкеты
@@ -74,19 +74,39 @@ public class ProfileController {
      * @return Страница с любимцами пользователя
      */
     @GetMapping(value = "/{userId}/favorites")
-    public PageableFavorite findAllByPage(@PathVariable("userId") Long userId,
-                                          @RequestParam("page") int page,
-                                          @RequestParam("size") int size) {
+    public PageableFavorite getFavorites(@PathVariable("userId") Long userId,
+                                         @RequestParam("page") int page,
+                                         @RequestParam("size") int size) {
         PageRequest pageable = PageRequest.of(page, size);
         return favoritesService.findFavorites(pageable, userId);
     }
 
+    /**
+     * Поиск анкет
+     *
+     * @param userId Идентификатор пользователя
+     * @param page   Страница
+     * @param size   Количество записей на странице
+     * @return Страница с результатом поиска
+     */
     @GetMapping(value = "/{userId}/actions/search")
     public PageableProfile searchProfiles(@PathVariable("userId") Long userId,
                                           @RequestParam("page") int page,
                                           @RequestParam("size") int size) {
         PageRequest pageable = PageRequest.of(page, size);
         return searchService.searchProfiles(pageable, userId);
+    }
+
+    /**
+     * Добавление лайка пользователя
+     *
+     * @param userId Идентификатор пользователя
+     * @param like   Объект, содержащий идентификатор пользователя, которому поставили лайк
+     * @return Объект, содержащий сообщение о наличии мэтча
+     */
+    @PostMapping(value = "/{userId}/actions/like")
+    public MatchMessage putLike(@PathVariable("userId") Long userId, @RequestBody Like like) {
+        return likeService.putLike(userId, like);
     }
 
 }
