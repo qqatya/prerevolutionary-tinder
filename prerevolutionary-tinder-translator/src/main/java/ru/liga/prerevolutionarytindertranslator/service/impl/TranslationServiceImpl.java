@@ -18,7 +18,7 @@ public class TranslationServiceImpl implements TranslationService {
 
     @Override
     public String translate(String text) {
-        return getEs(getFs(getIs(getErs(text))));
+        return getEs(getFs(getIs(getErs(text + " ")))).trim();
     }
 
     private String getErs(String text) {
@@ -75,11 +75,10 @@ public class TranslationServiceImpl implements TranslationService {
     }
 
     private String getFs(String text) {
-        String spaceAdded = text + " ";
         Pattern punctuationPattern = Pattern.compile(PUNCTUATION_PATTERN);
         StringBuilder temp = new StringBuilder();
         StringBuilder result = new StringBuilder();
-        char[] chars = spaceAdded.toCharArray();
+        char[] chars = text.toCharArray();
 
         for (char c : chars) {
             Matcher punctuationMatcher = punctuationPattern.matcher(String.valueOf(c));
@@ -100,7 +99,7 @@ public class TranslationServiceImpl implements TranslationService {
                 result.append(c);
             }
         }
-        return result.toString().trim();
+        return result.toString();
     }
 
     private String getEs(String text) {
