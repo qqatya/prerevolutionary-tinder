@@ -1,29 +1,29 @@
 INSERT INTO pretinder.profile (user_id, name, gender, search, header, description, delete_dttm)
 VALUES (1, 'Зинаида', 'FEMALE', 'ALL',
-'За совсем старого дворянина, миллионера выйду замуж.', 'Дворянка, 35 лет. Подробности в переписке. Москва, Леонтьевский пер.',
+'За совсѣмъ старого дворянина, миллiонера выйду замужъ.', 'Дворянка, 35 лѣтъ. Подробности въ перѣписке. Москва, Леонтьевскiй перъ.',
 null);
 INSERT INTO pretinder.profile (user_id, name, gender, search, header, description, delete_dttm)
-VALUES (2, 'Аркадий', 'MALE', 'ALL', 'Шатен, 30 лет.', 'Скромный, трезвый, хорошего характера', null);
+VALUES (2, 'Аркадiй', 'MALE', 'ALL', 'Шатѣнъ, 30 лѣтъ.', 'Скромный, трѣзвый, хорошего характера', null);
 INSERT INTO pretinder.profile (user_id, name, gender, search, header, description, delete_dttm)
-VALUES (3, 'Иван', 'MALE', 'ALL', 'Иван, 30 лет', 'Папин скромняга, мамин симпатяга', null);
+VALUES (3, 'Иванъ', 'MALE', 'ALL', 'Иванъ, 30 лѣт', 'Папинъ скромняга, маминъ симпатяга', null);
 INSERT INTO pretinder.profile (user_id, name, gender, search, header, description, delete_dttm)
-VALUES (4, 'Олег', 'MALE', 'ALL', 'Для', 'себя обеспечен, не пью, не курю, в карты не играю. 35 лет.', null);
+VALUES (4, 'Олегъ', 'MALE', 'ALL', 'Для', 'себя обѣспеченъ, не пью, не курю, въ карты не играю. 35 лѣтъ.', null);
 INSERT INTO pretinder.profile (user_id, name, gender, search, header, description, delete_dttm)
-VALUES (5, 'Ольга', 'FEMALE', 'ALL', 'Желаю выйти замуж.', 'Брюнетка, выше среднего роста, стройная, 25 лет, говорят очень недурненькая, но бедна, преданного нет.',
+VALUES (5, 'Ѳекла', 'FEMALE', 'ALL', 'Желаю выйти замужъ.', 'Брюнѣтка, выше срѣднѣго роста, стройная, 25 лѣтъ, говорятъ очень нѣдурненькая, но бѣдна, прѣданного нѣтъ.',
 null);
 INSERT INTO pretinder.profile (user_id, name, gender, search, header, description, delete_dttm)
-VALUES (6, 'Анна', 'FEMALE', 'ALL', 'Находка', null, null);
+VALUES (6, 'Анна', 'FEMALE', 'ALL', 'Находка', 'имѣть мѣня своей женой', null);
 INSERT INTO pretinder.profile (user_id, name, gender, search, header, description, delete_dttm)
-VALUES (7, 'Игорь', 'MALE', 'ALL', 'Моя', 'жена-подруга должна быть молода, изящна и мила, без предрассудков, эксцентрична.',
+VALUES (7, 'Игорь', 'MALE', 'ALL', 'Моя', 'жена-подруга должна быть молода, изящна и мила, безъ прѣдрассудковъ, эксцѣнтрична.',
 null);
 INSERT INTO pretinder.profile (user_id, name, gender, search, header, description, delete_dttm)
-VALUES (8, 'Александр', 'MALE', 'ALL', 'На', 'пожилой, больной или с физическим недостатком особе желает немедленно жениться, 28 л., с хорошей наружностью, но только что потерявший зрение на один глаз, образованный, имеющий прибыльное дело',
+VALUES (8, 'Алѣксандръ', 'MALE', 'ALL', 'На', 'пожилой, больной или съ физическимъ недостаткомъ особе желаетъ нѣмѣдлѣнно жениться, 28 лъ., съ хорошей наружностью, но только что потерявшiй зрѣнiе на одинъ глазъ, образованный, имеющiй прибыльное дѣло',
 null);
 INSERT INTO pretinder.profile (user_id, name, gender, search, header, description, delete_dttm)
-VALUES (9, 'Лилия', 'FEMALE', 'ALL', 'Только что кончившая гимназию девица желает выйти замуж за холостого или бездетного вдовца с состоянием.', 'Возраста не стесняться',
+VALUES (9, 'Лилiя', 'FEMALE', 'ALL', 'Только что кончившая гимназiю дѣвица желаетъ выйти замужъ за холостого или бѣздѣтного вдовца съ состоянiѣмъ.', 'Возраста не стѣсняться',
 null);
 INSERT INTO pretinder.profile (user_id, name, gender, search, header, description, delete_dttm)
-VALUES (10, 'Светлана', 'FEMALE', 'ALL', '20 лет.', 'Образованная барышня ищет мужа миллионера, непременно пожилого, во избежание неверности',
+VALUES (10, 'Свѣтлана', 'FEMALE', 'ALL', '20 лѣтъ.', 'Образованная барышня ищетъ мужа миллiонера, непрѣмѣнно пожилого, во избѣжанiе невѣрности',
 null);
 
 INSERT INTO pretinder.user_favorite (user_id, favorite_user_id)
