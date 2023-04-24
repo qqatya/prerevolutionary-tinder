@@ -9,18 +9,18 @@ public interface FavoritesRepository {
     /**
      * Постраничный поиск любимцев пользователя
      *
-     * @param page   Информация по номеру страницы и количеству записей в ней
-     * @param userId Идентификатор пользователя
+     * @param pageable Информация по номеру страницы и количеству записей в ней
+     * @param userId   Идентификатор пользователя
      * @return Страница с желаемым количестаом пользователей
      */
-    List<Profile> findFavoritesByUserId(Pageable page, Long userId);
+    List<Profile> findFavoritesByUserId(Pageable pageable, Long userId);
 
     /**
      * Постраничный поиск пользователей, у которых текущий пользователь в любимцах
      *
-     * @param page   Информация по номеру страницы и количеству записей в ней
-     * @param userId Идентификатор пользователя
+     * @param pageable Информация по номеру страницы и количеству записей в ней
+     * @param userId   Идентификатор пользователя
      * @return Страница с желаемым количестаом пользователей
      */
-    List<Profile> findUsersHavingUserIdAsFavorite(Pageable page, Long userId);
+    List<Profile> findUsersHavingUserIdAsFavorite(Pageable pageable, Long userId);
 }

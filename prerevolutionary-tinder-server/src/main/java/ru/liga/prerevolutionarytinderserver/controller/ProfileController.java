@@ -6,9 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import ru.liga.prerevolutionarytinderserver.model.PageableFavorite;
+import ru.liga.prerevolutionarytinderserver.model.PageableProfile;
 import ru.liga.prerevolutionarytinderserver.model.Profile;
 import ru.liga.prerevolutionarytinderserver.service.FavoritesService;
 import ru.liga.prerevolutionarytinderserver.service.ProfileService;
+import ru.liga.prerevolutionarytinderserver.service.SearchService;
 
 @RestController
 @RequestMapping("profile")
@@ -16,6 +18,7 @@ import ru.liga.prerevolutionarytinderserver.service.ProfileService;
 public class ProfileController {
     private final ProfileService profileService;
     private final FavoritesService favoritesService;
+    private final SearchService searchService;
 
     /**
      * Создание анкеты
@@ -64,16 +67,26 @@ public class ProfileController {
 
     /**
      * Получение любимцев пользователя
+     *
      * @param userId Идентификатор пользователя
-     * @param page Страница
-     * @param size Количество записей на странице
+     * @param page   Страница
+     * @param size   Количество записей на странице
      * @return Страница с любимцами пользователя
      */
     @GetMapping(value = "/{userId}/favorites")
-    public PageableFavorite findAllByPage(@PathVariable("userId") final Long userId,
-                                          @RequestParam("page") final int page,
-                                          @RequestParam("size") final int size) {
+    public PageableFavorite findAllByPage(@PathVariable("userId") Long userId,
+                                          @RequestParam("page") int page,
+                                          @RequestParam("size") int size) {
         PageRequest pageable = PageRequest.of(page, size);
         return favoritesService.findFavorites(pageable, userId);
     }
+
+    @GetMapping(value = "/{userId}/actions/search")
+    public PageableProfile searchProfiles(@PathVariable("userId") Long userId,
+                                          @RequestParam("page") int page,
+                                          @RequestParam("size") int size) {
+        PageRequest pageable = PageRequest.of(page, size);
+        return searchService.searchProfiles(pageable, userId);
+    }
+
 }
