@@ -22,5 +22,5 @@ public interface ProfileRepository {
      * Обновление анкеты
      * @param profile Объект анкеты
      */
-    void updateProfile(Profile profile);
+    void updateProfile(Long userId, Profile profile);
 }

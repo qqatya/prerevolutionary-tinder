@@ -19,6 +19,7 @@ public class ProfileMapper implements RowMapper<Profile> {
                 rs.getLong("user_id"),
                 rs.getString("name"),
                 GenderEnum.valueOf(rs.getString("gender")),
+                rs.getString("header"),
                 rs.getString("description"),
                 GenderEnum.valueOf(rs.getString("search")));
     }

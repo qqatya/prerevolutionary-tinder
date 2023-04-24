@@ -6,6 +6,7 @@ CREATE TABLE pretinder.profile (
     name            varchar(255)                    NOT NULL,
     gender          varchar(10)                     NOT NULL,
     search          varchar(10)                     NOT NULL,
+    header          text,
     description     text,
     create_dttm     timestamptz DEFAULT now()       NOT NULL,
     delete_dttm     timestamptz,
@@ -19,6 +20,7 @@ COMMENT ON COLUMN pretinder.profile.user_id is 'Идентификатор по�
 COMMENT ON COLUMN pretinder.profile.name is 'Имя пользователя';
 COMMENT ON COLUMN pretinder.profile.gender is 'Пол';
 COMMENT ON COLUMN pretinder.profile.search is 'Категория поиска';
+COMMENT ON COLUMN pretinder.profile.header is 'Заголовок анкеты';
 COMMENT ON COLUMN pretinder.profile.description is 'Описание анкеты';
 COMMENT ON COLUMN pretinder.profile.create_dttm is 'Дата и время создания записи';
 COMMENT ON COLUMN pretinder.profile.delete_dttm is 'Дата и время удаления записи';
