@@ -24,9 +24,10 @@ public class AskGenderHandler implements MessageHandler {
 
     @Override
     public SendMessage handle(Message message) {
-        userDataCacheStore.setUserCurrentBotState(message.getFrom().getId(), BotState.ASK_NAME);
+
         SendMessage replyToUser = messagesService.getReplyMessage(message.getChatId(), "Вы сударь иль сударыня?", userDataCacheStore.getUserCurrentBotState(message.getFrom().getId()));
         replyToUser.setReplyMarkup(getInlineMessageButtons());
+        userDataCacheStore.setUserCurrentBotState(message.getFrom().getId(), BotState.ASK_NAME);
         return replyToUser;
     }
     private InlineKeyboardMarkup getInlineMessageButtons() {

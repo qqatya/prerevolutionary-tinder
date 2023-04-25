@@ -4,14 +4,15 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
+import java.io.Serializable;
 
 @Data
 @Getter
 @Setter
-public class UserProfile {
-    String name;
-    Gender gender;
-    String description;
-    List<Gender> preferences;
+public class UserProfile implements Serializable {
+    private Long userId;
+    private String name;
+    private Gender gender;
+    private String description;
+    private Gender search;
 }

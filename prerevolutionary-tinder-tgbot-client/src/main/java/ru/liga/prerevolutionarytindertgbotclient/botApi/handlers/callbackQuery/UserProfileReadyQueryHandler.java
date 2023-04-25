@@ -5,39 +5,44 @@ import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import ru.liga.prerevolutionarytindertgbotclient.model.BotState;
 import ru.liga.prerevolutionarytindertgbotclient.model.Gender;
-import ru.liga.prerevolutionarytindertgbotclient.repository.UserDataCacheStore;
 import ru.liga.prerevolutionarytindertgbotclient.model.UserProfile;
+import ru.liga.prerevolutionarytindertgbotclient.repository.UserDataCacheStore;
 import ru.liga.prerevolutionarytindertgbotclient.service.ReplyMessagesService;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import ru.liga.prerevolutionarytindertgbotclient.service.rest.UserProfileService;
 
 @Component
 public class UserProfileReadyQueryHandler implements CallbackQueryHandler {
     private final ReplyMessagesService replyMessagesService;
     private final UserDataCacheStore userDataCacheStore;
 
-    public UserProfileReadyQueryHandler(ReplyMessagesService replyMessagesService, UserDataCacheStore userDataCacheStore) {
+    private final UserProfileService userProfileService;
+
+    public UserProfileReadyQueryHandler(ReplyMessagesService replyMessagesService, UserDataCacheStore userDataCacheStore, UserProfileService userProfileService) {
         this.replyMessagesService = replyMessagesService;
         this.userDataCacheStore = userDataCacheStore;
+        this.userProfileService = userProfileService;
     }
+
     public BotApiMethod<?> handle(CallbackQuery callbackQuery) {
         String data = callbackQuery.getData();
+        long userId = callbackQuery.getFrom().getId();
         UserProfile userProfile = userDataCacheStore.getUserProfile(callbackQuery.getFrom().getId());
         if (data.equals(Gender.MALE.getName())) {
-            userProfile.setPreferences(List.of(Gender.MALE));
+            userProfile.setSearch(Gender.MALE);
         }
         if (data.equals(Gender.FEMALE.getName())) {
-            userProfile.setPreferences(List.of(Gender.FEMALE));
+            userProfile.setSearch(Gender.FEMALE);
         }
-        if (data.equals("All")) {
-            userProfile.setPreferences(new ArrayList<>(Arrays.asList(Gender.values())));
+        System.out.println(data);
+        if (data.equals("Всех")) {
+            userProfile.setSearch(Gender.ALL);
         }
-        userDataCacheStore.setUserCurrentBotState(callbackQuery.getFrom().getId(), BotState.SHOW_MAIN_MENU);
-        // тут сохранить и также показать профиль
-        return replyMessagesService.getReplyMessage(callbackQuery.getMessage().getChatId(), userProfile.toString(), userDataCacheStore.getUserCurrentBotState(callbackQuery.getMessage().getChatId()));
+        userProfile.setUserId(userId);
+        UserProfile profile = userProfileService.postUserProfile(userDataCacheStore.getUserProfile(userId));
+        userDataCacheStore.setUserCurrentBotState(userId, BotState.SHOW_MAIN_MENU);
+        return replyMessagesService.getReplyMessage(callbackQuery.getMessage().getChatId(), profile.toString(), userDataCacheStore.getUserCurrentBotState(callbackQuery.getMessage().getChatId()));
     }
+
     public BotState getHandlerName() {
         return BotState.USER_PROFILE_IS_READY;
     }

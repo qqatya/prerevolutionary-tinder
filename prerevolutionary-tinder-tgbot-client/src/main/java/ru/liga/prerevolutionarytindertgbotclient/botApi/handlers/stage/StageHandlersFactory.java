@@ -26,7 +26,7 @@ public class StageHandlersFactory {
         BotStage currentStage = getBotCurrentStage(botState);
         StageHandler stageHandler = stageHandlers.get(currentStage);
         if (stageHandler == null) {
-            throw new RuntimeException();
+            throw new RuntimeException("Не найдет обработчик для текущей стадии " + currentStage);
         }
         log.debug("Найдет обработчик для текущей стадии " + currentStage + ": " +  stageHandler);
         return stageHandler;

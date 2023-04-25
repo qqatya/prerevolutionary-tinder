@@ -24,8 +24,9 @@ public class AskDescriptionHandler implements MessageHandler {
         long userId = message.getFrom().getId();
         String usersAnswer = message.getText();
         userDataCache.getUserProfile(userId).setName(usersAnswer);
-        userDataCache.setUserCurrentBotState(userId, BotState.ASK_PREFERENCES);
+
         replyToUser = messagesService.getReplyMessage(message.getChatId(), "Извольте описать себя", userDataCache.getUserCurrentBotState(userId));
+        userDataCache.setUserCurrentBotState(userId, BotState.ASK_PREFERENCES);
         return replyToUser;
     }
 

@@ -22,7 +22,7 @@ public class MessageHandlersFactory {
     public MessageHandler getHandler(BotState botState) {
         MessageHandler messageHandler = messageHandlers.get(botState);
         if (messageHandler == null) {
-            throw new RuntimeException("Не найдет обработчик для текущего состояния" + botState + "объекта типа Message");
+            throw new RuntimeException("Не найдет обработчик для текущего состояния " + botState + " объекта типа Message");
         }
         log.debug("Найдет обработчик для текущего состояния " + botState + "объекта типа Message" + messageHandler);
         return messageHandler;

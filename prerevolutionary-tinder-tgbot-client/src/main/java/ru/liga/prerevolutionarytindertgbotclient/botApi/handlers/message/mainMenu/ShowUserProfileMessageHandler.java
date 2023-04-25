@@ -10,11 +10,11 @@ import ru.liga.prerevolutionarytindertgbotclient.repository.UserDataCacheStore;
 import ru.liga.prerevolutionarytindertgbotclient.service.ReplyMessagesService;
 
 @Component
-public class ShowUserProfileStateHandler implements MessageHandler {
+public class ShowUserProfileMessageHandler implements MessageHandler {
     private final UserDataCacheStore userDataCacheStore;
     private final ReplyMessagesService replyMessagesService;
 
-    public ShowUserProfileStateHandler(UserDataCacheStore userDataCacheStore, ReplyMessagesService replyMessagesService) {
+    public ShowUserProfileMessageHandler(UserDataCacheStore userDataCacheStore, ReplyMessagesService replyMessagesService) {
         this.userDataCacheStore = userDataCacheStore;
         this.replyMessagesService = replyMessagesService;
     }

@@ -26,9 +26,9 @@ public class AskPreferencesHandler implements MessageHandler {
         SendMessage replyToUser;
         long userId = message.getFrom().getId();
         userDataCache.getUserProfile(userId).setDescription(message.getText());
-        userDataCache.setUserCurrentBotState(userId, BotState.USER_PROFILE_IS_READY);
         replyToUser = messagesService.getReplyMessage(message.getChatId(), "Кого вы ищите?", userDataCache.getUserCurrentBotState(userId));
         replyToUser.setReplyMarkup(getInlineMessageButtons());
+        userDataCache.setUserCurrentBotState(userId, BotState.USER_PROFILE_IS_READY);
         return replyToUser;
     }
         private InlineKeyboardMarkup getInlineMessageButtons() {
@@ -41,7 +41,7 @@ public class AskPreferencesHandler implements MessageHandler {
         buttonWoman.setCallbackData(Gender.FEMALE.getName());
         InlineKeyboardButton buttonAll = new InlineKeyboardButton();
         buttonAll.setText("Всех");
-        buttonAll.setCallbackData("All");
+        buttonAll.setCallbackData("Всех");
         List<List<InlineKeyboardButton>> buttonList = List.of(List.of(buttonMan, buttonWoman), List.of(buttonAll));
         inlineKeyboardMarkup.setKeyboard(buttonList);
         return inlineKeyboardMarkup;
