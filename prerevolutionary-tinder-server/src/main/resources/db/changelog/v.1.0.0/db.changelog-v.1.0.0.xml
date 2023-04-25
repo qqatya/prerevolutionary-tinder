@@ -7,5 +7,7 @@
 
     <include file="changeset/init_db.xml" relativeToChangelogFile="true"/>
     <include file="changeset/insert_data_profile_favorites.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/create_table_user_state.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/insert_user_state_data.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

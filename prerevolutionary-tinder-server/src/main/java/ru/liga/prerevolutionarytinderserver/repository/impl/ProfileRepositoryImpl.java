@@ -1,6 +1,6 @@
 package ru.liga.prerevolutionarytinderserver.repository.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -11,6 +11,7 @@ import ru.liga.prerevolutionarytinderserver.repository.ProfileRepository;
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class ProfileRepositoryImpl implements ProfileRepository {
     private static final String SQL_INSERT_PROFILE =
             "insert into pretinder.profile (user_id, name, gender, search, header, description, delete_dttm) "
@@ -23,12 +24,6 @@ public class ProfileRepositoryImpl implements ProfileRepository {
                     "description = :description where user_id = :user_id";
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final ProfileMapper profileMapper;
-
-    @Autowired
-    public ProfileRepositoryImpl(NamedParameterJdbcTemplate jdbcTemplate, ProfileMapper profileMapper) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.profileMapper = profileMapper;
-    }
 
     @Override
     public void insertProfile(Profile profile) {

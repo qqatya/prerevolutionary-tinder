@@ -22,10 +22,4 @@ public interface ProfileService {
      */
     void updateProfile(Profile profile, Long userId);
 
-    /**
-     * Получение картинки с описанием анкеты
-     * @param userId Идентификатор пользователя
-     * @return Байтовый массив, содержащий изображение
-     */
-    byte[] getPicture(Long userId);
 }
