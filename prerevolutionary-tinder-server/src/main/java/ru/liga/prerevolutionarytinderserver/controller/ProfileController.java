@@ -1,20 +1,33 @@
 package ru.liga.prerevolutionarytinderserver.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import ru.liga.prerevolutionarytinderserver.dto.ProfileDescription;
+import ru.liga.prerevolutionarytinderserver.dto.Text;
+import ru.liga.prerevolutionarytinderserver.exception.ConnectionException;
 import ru.liga.prerevolutionarytinderserver.model.*;
 import ru.liga.prerevolutionarytinderserver.service.FavoritesService;
 import ru.liga.prerevolutionarytinderserver.service.LikeService;
 import ru.liga.prerevolutionarytinderserver.service.ProfileService;
 import ru.liga.prerevolutionarytinderserver.service.SearchService;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 @RestController
 @RequestMapping("profile")
 @RequiredArgsConstructor
+@PropertySource("classpath:application.properties")
 public class ProfileController {
+    private static final String IMAGE_CREATOR_URL = "pretinder.image-creator.url";
+    private static final String TRANSLATOR_URL = "pretinder.translator.url";
+    private final Environment env;
     private final ProfileService profileService;
     private final FavoritesService favoritesService;
     private final SearchService searchService;
@@ -28,6 +41,17 @@ public class ProfileController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void createProfile(@RequestBody Profile profile) {
+        RestTemplate restTemplate = new RestTemplate();
+        Text name = new Text(profile.getName());
+        Text description = new Text(profile.getDescription());
+
+        try {
+            URI uri = new URI(env.getProperty(TRANSLATOR_URL) + "/translation");
+            profile.setName(restTemplate.postForObject(uri, name, Text.class).getText());
+            profile.setDescription(restTemplate.postForObject(uri, description, Text.class).getText());
+        } catch (URISyntaxException e) {
+            throw new ConnectionException();
+        }
         profileService.createProfile(profile);
     }
 
@@ -50,6 +74,17 @@ public class ProfileController {
     @PutMapping(value = "/update/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateProfile(@PathVariable("userId") Long userId, @RequestBody Profile profile) {
+        RestTemplate restTemplate = new RestTemplate();
+        Text name = new Text(profile.getName());
+        Text description = new Text(profile.getDescription());
+
+        try {
+            URI uri = new URI(env.getProperty(TRANSLATOR_URL) + "/translation");
+            profile.setName(restTemplate.postForObject(uri, name, Text.class).getText());
+            profile.setDescription(restTemplate.postForObject(uri, description, Text.class).getText());
+        } catch (URISyntaxException e) {
+            throw new ConnectionException();
+        }
         profileService.updateProfile(profile, userId);
     }
 
@@ -59,10 +94,18 @@ public class ProfileController {
      * @param userId Идентификатор пользователя
      * @return Байтовый массив, содержащий изображение
      */
-    @GetMapping(value = "/{userId}/image",
-            produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = "/{userId}/image", produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] getProfilePicture(@PathVariable("userId") Long userId) {
-        return profileService.getPicture(userId);
+        Profile profile = profileService.getProfile(userId);
+        ProfileDescription profileDescription = new ProfileDescription(profile.getHeader(), profile.getDescription());
+        RestTemplate restTemplate = new RestTemplate();
+
+        try {
+            URI uri = new URI(env.getProperty(IMAGE_CREATOR_URL) + "/image");
+            return restTemplate.postForObject(uri, profileDescription, byte[].class);
+        } catch (URISyntaxException e) {
+            throw new ConnectionException();
+        }
     }
 
     /**
