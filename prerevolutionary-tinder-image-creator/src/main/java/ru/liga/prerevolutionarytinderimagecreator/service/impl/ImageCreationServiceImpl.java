@@ -1,5 +1,6 @@
 package ru.liga.prerevolutionarytinderimagecreator.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.docx4j.org.capaxit.imagegenerator.Margin;
 import org.docx4j.org.capaxit.imagegenerator.TextImage;
 import org.docx4j.org.capaxit.imagegenerator.TextWrapper;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class ImageCreationServiceImpl implements ImageCreationService {
     /**
      * Ширина и высота изображения
@@ -46,12 +48,15 @@ public class ImageCreationServiceImpl implements ImageCreationService {
 
     @Override
     public byte[] createPicture(String header, String description) {
+        log.info("Start creating image");
         Margin margin = new Margin(LEFT, TOP, RIGHT, BOTTOM);
         TextImage testImage = new TextImageImpl(WIDTH, HEIGHT, margin);
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 
         registerFont(ge, FONT_PLAIN, false);
+        log.debug("Registered font: {}", FONT_PLAIN);
         registerFont(ge, FONT_BOLD, true);
+        log.debug("Registered font: {}", FONT_BOLD);
         Map<Integer, Integer> fontSizes = getFontSize(testImage, margin, header, description,
                 new Font("Old Standard TT", Font.BOLD, 1),
                 new Font("Old Standard TT", Font.BOLD, 1));
@@ -61,11 +66,15 @@ public class ImageCreationServiceImpl implements ImageCreationService {
         int oY = 0;
 
         testImage.write(getBackground(), oX, oY);
+        log.debug("Applied image background");
         testImage.withFont(bold).wrap(true).write(header);
+        log.debug("Applied header text");
         testImage.withFont(plain).wrap(true).write(description);
+        log.debug("Applied description text");
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             PngImageWriter pngImageWriter = new PngImageWriter();
             pngImageWriter.writeImageToOutputStream(testImage, os);
+            log.info("Successfully created image");
             return os.toByteArray();
         } catch (IOException e) {
             throw new ImageCreationException();
@@ -114,6 +123,8 @@ public class ImageCreationServiceImpl implements ImageCreationService {
         }
         Map<Integer, Integer> fontSizes = new HashMap<>();
 
+        log.debug("Header font size: {}", currentBold.getSize());
+        log.debug("Description font size {}", currentPlain.getSize());
         fontSizes.put(Font.BOLD, currentBold.getSize());
         fontSizes.put(Font.PLAIN, currentPlain.getSize());
         return fontSizes;
@@ -121,6 +132,7 @@ public class ImageCreationServiceImpl implements ImageCreationService {
 
     private Image getBackground() {
         try (InputStream is = ImageCreationServiceImpl.class.getResourceAsStream(ImageCreationServiceImpl.BACKGROUND)) {
+            log.debug("Found background resource: {}", BACKGROUND);
             return ImageIO.read(is);
         } catch (IOException e) {
             throw new BackgroundNotFoundException(ImageCreationServiceImpl.BACKGROUND);
