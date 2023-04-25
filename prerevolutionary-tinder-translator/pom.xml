@@ -31,7 +31,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>ru.liga.prerevolutionarytinderimagecreator.PrerevolutionaryTinderImageCreatorApplication
+                            <mainClass>ru.liga.prerevolutionarytindertranslator.PrerevolutionaryTinderTranslatorApplication
                             </mainClass>
                         </manifest>
                     </archive>
