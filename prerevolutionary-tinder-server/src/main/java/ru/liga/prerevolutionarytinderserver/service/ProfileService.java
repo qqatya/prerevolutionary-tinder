@@ -14,7 +14,7 @@ public interface ProfileService {
      * @param userId Идентификатор пользователя
      * @return Объект анкеты
      */
-    Profile getProfile(long userId);
+    Profile getProfile(Long userId);
 
     /**
      * Обновление анкеты

@@ -1,6 +1,7 @@
 package ru.liga.prerevolutionarytinderserver.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
@@ -22,8 +23,9 @@ import java.net.URISyntaxException;
 
 @RestController
 @RequestMapping("profile")
-@RequiredArgsConstructor
 @PropertySource("classpath:application.properties")
+@RequiredArgsConstructor
+@Slf4j
 public class ProfileController {
     private static final String IMAGE_CREATOR_URL = "pretinder.image-creator.url";
     private static final String TRANSLATOR_URL = "pretinder.translator.url";
@@ -44,11 +46,11 @@ public class ProfileController {
         RestTemplate restTemplate = new RestTemplate();
         Text name = new Text(profile.getName());
         Text description = new Text(profile.getDescription());
-
         try {
             URI uri = new URI(env.getProperty(TRANSLATOR_URL) + "/translation");
             profile.setName(restTemplate.postForObject(uri, name, Text.class).getText());
             profile.setDescription(restTemplate.postForObject(uri, description, Text.class).getText());
+            log.debug("Finished name and description translation");
         } catch (URISyntaxException e) {
             throw new ConnectionException();
         }
@@ -82,6 +84,7 @@ public class ProfileController {
             URI uri = new URI(env.getProperty(TRANSLATOR_URL) + "/translation");
             profile.setName(restTemplate.postForObject(uri, name, Text.class).getText());
             profile.setDescription(restTemplate.postForObject(uri, description, Text.class).getText());
+            log.debug("Finished name and description translation");
         } catch (URISyntaxException e) {
             throw new ConnectionException();
         }
@@ -102,6 +105,7 @@ public class ProfileController {
 
         try {
             URI uri = new URI(env.getProperty(IMAGE_CREATOR_URL) + "/image");
+            log.info("Receiving image from image-creator by userId: {}", userId);
             return restTemplate.postForObject(uri, profileDescription, byte[].class);
         } catch (URISyntaxException e) {
             throw new ConnectionException();

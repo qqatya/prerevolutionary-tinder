@@ -1,6 +1,7 @@
 package ru.liga.prerevolutionarytinderserver.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,18 +17,23 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FavoritesServiceImpl implements FavoritesService {
     private final FavoritesRepositoryImpl favoritesRepository;
 
     @Override
     public PageableFavorite findFavorites(Pageable pageable, Long userId) {
+        log.info("Start favorites search by userId: {}", userId);
         List<Profile> favoritesOfUser = favoritesRepository.findFavoritesByUserId(pageable, userId);
+        log.debug("User's favorites amount = {}", favoritesOfUser.size());
         List<Profile> userIsFavorite = favoritesRepository.findUsersHavingUserIdAsFavorite(pageable, userId);
+        log.debug("Users having user as favorite amount = {}", userIsFavorite.size());
         List<Profile> matches = new ArrayList<>(favoritesOfUser);
 
         matches.retainAll(userIsFavorite);
         favoritesOfUser.removeAll(matches);
         userIsFavorite.removeAll(matches);
+        log.debug("Matches amount = {}", matches.size());
         List<Favorite> totalFavorites = new ArrayList<>();
 
         for (Profile profile : matches) {
@@ -44,6 +50,7 @@ public class FavoritesServiceImpl implements FavoritesService {
         currentFavorites.add(totalFavorites.get((int) pageable.getOffset()));
         PageImpl<Favorite> favoritePage = new PageImpl<>(currentFavorites, pageable, totalFavorites.size());
 
+        log.info("Finished favorites search by userId: {}", userId);
         return new PageableFavorite(favoritePage.getContent(), favoritePage.getTotalPages(),
                 favoritePage.getTotalElements());
     }

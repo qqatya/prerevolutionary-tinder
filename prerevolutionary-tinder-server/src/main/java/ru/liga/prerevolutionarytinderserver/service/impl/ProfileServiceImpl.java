@@ -1,6 +1,7 @@
 package ru.liga.prerevolutionarytinderserver.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.liga.prerevolutionarytinderserver.exception.ProfileNotFoundException;
 import ru.liga.prerevolutionarytinderserver.model.Profile;
@@ -9,6 +10,7 @@ import ru.liga.prerevolutionarytinderserver.service.ProfileService;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProfileServiceImpl implements ProfileService {
     private final ProfileRepository profileRepository;
 
@@ -16,10 +18,12 @@ public class ProfileServiceImpl implements ProfileService {
     public void createProfile(Profile profile) {
         parseDescription(profile);
         profileRepository.insertProfile(profile);
+        log.info("Created profile by userId: {}", profile.getUserId());
     }
 
     @Override
-    public Profile getProfile(long userId) {
+    public Profile getProfile(Long userId) {
+        log.info("Getting profile info by userId: {}", userId);
         return profileRepository.getProfileByUserId(userId)
                 .orElseThrow(() -> new ProfileNotFoundException(userId));
     }
@@ -32,6 +36,7 @@ public class ProfileServiceImpl implements ProfileService {
             parseDescription(profile);
         }
         profileRepository.updateProfile(userId, profile);
+        log.info("Updated profile by userId {}", userId);
     }
 
     private void parseDescription(Profile profile) {
@@ -45,13 +50,16 @@ public class ProfileServiceImpl implements ProfileService {
 
             profile.setHeader(split[firstLineIdx]);
             headerEnd = profile.getHeader().length() + "\n".length();
+            log.debug("Parsed profile header by newline");
         } else {
             String[] split = description.split("\\s+");
             int firstWordIdx = 0;
 
             profile.setHeader(split[firstWordIdx]);
             headerEnd = profile.getHeader().length();
+            log.debug("Parsed profile header by first word");
         }
         profile.setDescription(sb.substring(headerEnd, description.length()).trim());
+        log.debug("Set profile description");
     }
 }
