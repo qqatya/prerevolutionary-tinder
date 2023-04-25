@@ -1,6 +1,7 @@
 package ru.liga.prerevolutionarytindertranslator.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.liga.prerevolutionarytindertranslator.repository.ListRepository;
 import ru.liga.prerevolutionarytindertranslator.service.TranslationService;
@@ -10,6 +11,7 @@ import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TranslationServiceImpl implements TranslationService {
     private static final String PUNCTUATION_PATTERN = "[\\s,.:!?]+";
     private static final String CONSONANT_PATTERN = "^.*[бвгджзклмнпрстфхцчшщБВГДЖЗЙКЛМНПРСТФХЦЧШЩ]$";
@@ -22,6 +24,8 @@ public class TranslationServiceImpl implements TranslationService {
     }
 
     private String getErs(String text) {
+        log.info("Start translation");
+        log.debug("Initial string length = {}", text.length());
         char[] chars = text.toCharArray();
         StringBuilder sb = new StringBuilder();
         Pattern punctuationPattern = Pattern.compile(PUNCTUATION_PATTERN);
@@ -44,6 +48,7 @@ public class TranslationServiceImpl implements TranslationService {
             isUpperCase = Character.isUpperCase(c);
             sb.append(c);
         }
+        log.debug("Finished er translation");
         return sb.toString();
     }
 
@@ -71,6 +76,7 @@ public class TranslationServiceImpl implements TranslationService {
             charWasI = (c == 'И' || c == 'и');
             sb.append(c);
         }
+        log.debug("Finished i translation");
         return sb.toString();
     }
 
@@ -99,6 +105,7 @@ public class TranslationServiceImpl implements TranslationService {
                 result.append(c);
             }
         }
+        log.debug("Finished f translation");
         return result.toString();
     }
 
@@ -124,6 +131,9 @@ public class TranslationServiceImpl implements TranslationService {
                 sb.append(chars[i]);
             }
         }
+        log.debug("Finished e translation");
+        log.debug("Current string length = {}", sb.length());
+        log.info("Successfully translated text");
         return sb.toString();
     }
 }
