@@ -3,7 +3,9 @@ package ru.liga.prerevolutionarytindertgbotclient.botApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
@@ -23,8 +25,13 @@ public class PreRevolutionaryTinderBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         try {
-            BotApiMethod<?> replyMessageToUser = telegramFacade.handleUpdate(update);
-            execute(replyMessageToUser);
+            PartialBotApiMethod<?> replyMessageToUser = telegramFacade.handleUpdate(update);
+            if (replyMessageToUser instanceof SendPhoto) {
+                execute((SendPhoto) replyMessageToUser);
+            }
+            if (replyMessageToUser instanceof SendMessage) {
+                execute((SendMessage) replyMessageToUser);
+            }
         } catch (RuntimeException | TelegramApiException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,7 @@
 package ru.liga.prerevolutionarytindertgbotclient.botApi.handlers.message;
 
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -9,6 +10,7 @@ import ru.liga.prerevolutionarytindertgbotclient.model.BotState;
 import ru.liga.prerevolutionarytindertgbotclient.model.Gender;
 import ru.liga.prerevolutionarytindertgbotclient.repository.UserDataCacheStore;
 import ru.liga.prerevolutionarytindertgbotclient.service.ReplyMessagesService;
+import ru.liga.prerevolutionarytindertgbotclient.service.rest.UserStateService;
 
 import java.util.List;
 
@@ -16,18 +18,20 @@ import java.util.List;
 public class AskGenderHandler implements MessageHandler {
     private final ReplyMessagesService messagesService;
     private final UserDataCacheStore userDataCacheStore;
+    private final UserStateService userStateService;
 
-    public AskGenderHandler(ReplyMessagesService messagesService, UserDataCacheStore userDataCacheStore) {
+    public AskGenderHandler(ReplyMessagesService messagesService, UserDataCacheStore userDataCacheStore, UserStateService userStateService) {
         this.messagesService = messagesService;
         this.userDataCacheStore = userDataCacheStore;
+        this.userStateService = userStateService;
     }
 
     @Override
-    public SendMessage handle(Message message) {
+    public PartialBotApiMethod<?> handle(Message message) {
 
-        SendMessage replyToUser = messagesService.getReplyMessage(message.getChatId(), "Вы сударь иль сударыня?", userDataCacheStore.getUserCurrentBotState(message.getFrom().getId()));
+        SendMessage replyToUser = messagesService.getReplyMessage(message.getChatId(), "Вы сударь иль сударыня?", BotState.ASK_NAME);
         replyToUser.setReplyMarkup(getInlineMessageButtons());
-        userDataCacheStore.setUserCurrentBotState(message.getFrom().getId(), BotState.ASK_NAME);
+        userStateService.updateUserState(message.getFrom().getId().toString(), BotState.ASK_NAME);
         return replyToUser;
     }
     private InlineKeyboardMarkup getInlineMessageButtons() {

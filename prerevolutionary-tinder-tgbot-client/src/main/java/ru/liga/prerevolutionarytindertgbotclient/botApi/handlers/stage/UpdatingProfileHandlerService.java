@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.interfaces.BotApiObject;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.liga.prerevolutionarytindertgbotclient.botApi.handlers.callbackQuery.CallbackQueryHandlersFactory;
@@ -26,31 +26,29 @@ public class UpdatingProfileHandlerService implements StageHandler {
         this.queryHandlersFactory = queryHandlersFactory;
     }
 
-    public BotApiMethod<?> handleMessage(Message message, BotState botState) {
+    public PartialBotApiMethod<?> handleMessage(Message message, BotState botState) {
         long userId = message.getFrom().getId();
-        resetBotStateIfNeeded(userId);
-        BotApiMethod<?> replyToUser = messageHandlersFactory.getHandler(botState).handle(message);
+        PartialBotApiMethod<?> replyToUser = messageHandlersFactory.getHandler(botState).handle(message);
         userDataCache.saveUserProfile(userId, userDataCache.getUserProfile(userId));
         return replyToUser;
     }
 
-    public BotApiMethod<?> handleCallbackQuery(CallbackQuery callbackQuery, BotState botState) {
+    public PartialBotApiMethod<?> handleCallbackQuery(CallbackQuery callbackQuery, BotState botState) {
         long userId = callbackQuery.getFrom().getId();
-        resetBotStateIfNeeded(userId);
-        BotApiMethod<?> replyToUser = queryHandlersFactory.getHandler(botState).handle(callbackQuery);
+        PartialBotApiMethod<?> replyToUser = queryHandlersFactory.getHandler(botState).handle(callbackQuery);
         userDataCache.saveUserProfile(userId, userDataCache.getUserProfile(userId));
         return replyToUser;
     }
 
-    public void resetBotStateIfNeeded(long userId) {
-        BotState currentBotState = userDataCache.getUserCurrentBotState(userId);
-        if (currentBotState.equals(BotState.UPDATING_USER_PROFILE)) {
-            userDataCache.setUserCurrentBotState(userId, BotState.ASK_GENDER);
-        }
-    }
+//    public void resetBotStateIfNeeded(long userId) {
+//        BotState currentBotState = userDataCache.getUserCurrentBotState(userId);
+//        if (currentBotState.equals(BotState.UPDATING_USER_PROFILE)) {
+//            userDataCache.setUserCurrentBotState(userId, BotState.ASK_GENDER);
+//        }
+//    }
 
     @Override
-    public BotApiMethod<?> handle(BotApiObject apiObject, BotState botState) {
+    public PartialBotApiMethod<?> handle(BotApiObject apiObject, BotState botState) {
         if (apiObject instanceof Message) {
             return handleMessage((Message) apiObject, botState);
         }

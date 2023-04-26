@@ -1,7 +1,7 @@
 package ru.liga.prerevolutionarytindertgbotclient.botApi.handlers.message.mainMenu;
 
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.liga.prerevolutionarytindertgbotclient.botApi.handlers.message.MessageHandler;
 import ru.liga.prerevolutionarytindertgbotclient.model.BotState;
@@ -21,7 +21,7 @@ public class ShowFavoritesMessageHandler implements MessageHandler {
     }
 
     @Override
-    public BotApiMethod<?> handle(Message message) {
+    public PartialBotApiMethod<?> handle(Message message) {
         return replyMessagesService.getReplyMessage(message.getChatId(), "Not yet implemented", getHandlerName());
     }
 }
