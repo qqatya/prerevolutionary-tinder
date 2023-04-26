@@ -45,6 +45,8 @@ public class ImageCreationServiceImpl implements ImageCreationService {
     private static final String FONT_PLAIN = "/static/fonts/OldStandard-Regular.ttf";
     private static final String FONT_BOLD = "/static/fonts/OldStandard-Bold.ttf";
     private static final String BACKGROUND = "/static/prerev-background.jpg";
+    private static final int PLAIN_COEFFICIENT = 1;
+    private static final double BOLD_COEFFICIENT = 1.8;
 
     @Override
     public byte[] createPicture(String header, String description) {
@@ -52,14 +54,15 @@ public class ImageCreationServiceImpl implements ImageCreationService {
         Margin margin = new Margin(LEFT, TOP, RIGHT, BOTTOM);
         TextImage testImage = new TextImageImpl(WIDTH, HEIGHT, margin);
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        int initialFontSize = 1;
 
         registerFont(ge, FONT_PLAIN, false);
         log.debug("Registered font: {}", FONT_PLAIN);
         registerFont(ge, FONT_BOLD, true);
         log.debug("Registered font: {}", FONT_BOLD);
         Map<Integer, Integer> fontSizes = getFontSize(testImage, margin, header, description,
-                new Font("Old Standard TT", Font.BOLD, 1),
-                new Font("Old Standard TT", Font.BOLD, 1));
+                new Font("Old Standard TT", Font.BOLD, initialFontSize),
+                new Font("Old Standard TT", Font.BOLD, initialFontSize));
         Font plain = new Font("Old Standard TT", Font.PLAIN, fontSizes.get(Font.PLAIN));
         Font bold = new Font("Old Standard TT", Font.BOLD, fontSizes.get(Font.BOLD));
         int oX = 0;
@@ -102,12 +105,13 @@ public class ImageCreationServiceImpl implements ImageCreationService {
         int maxLineWidth = image.getWidth() - margin.getLeft() - margin.getRight();
         int boldTextHeight = 0;
         int plainTextHeight = 0;
+        int headerLineWidth = 0;
         Font currentBold = bold;
         Font currentPlain = plain;
 
-        while (boldTextHeight + plainTextHeight < maxTextHeight) {
-            int currentPlainSize = currentPlain.getSize() + 1;
-            int currentBoldSize = (int) (currentPlainSize * 1.8);
+        while (boldTextHeight + plainTextHeight < maxTextHeight && headerLineWidth < maxLineWidth - 1) {
+            int currentPlainSize = currentPlain.getSize() + PLAIN_COEFFICIENT;
+            int currentBoldSize = (int) (currentPlainSize * BOLD_COEFFICIENT);
 
             currentBold = new Font(currentBold.getFontName(), currentBold.getStyle(), currentBoldSize);
             currentPlain = new Font(currentBold.getFontName(), currentBold.getStyle(), currentPlainSize);
@@ -118,6 +122,7 @@ public class ImageCreationServiceImpl implements ImageCreationService {
             List<String> wrappedBoldText = textWrapper.doWrap(header, maxLineWidth, fmBold);
             List<String> wrappedPlainText = textWrapper.doWrap(description, maxLineWidth, fmPlain);
 
+            headerLineWidth = fmBold.stringWidth(header);
             boldTextHeight = wrappedBoldText.size() * fmBold.getHeight();
             plainTextHeight = wrappedPlainText.size() * fmPlain.getHeight();
         }
