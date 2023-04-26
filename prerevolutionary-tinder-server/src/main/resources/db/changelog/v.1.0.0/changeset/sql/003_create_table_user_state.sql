@@ -2,8 +2,7 @@ CREATE TABLE pretinder.user_state (
     id                  SERIAL                          NOT NULL,
     user_id             integer                         NOT NULL,
     state               text                            NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (user_id) REFERENCES profile(user_id) ON DELETE CASCADE
+    PRIMARY KEY (id)
 );
 
 COMMENT ON TABLE pretinder.user_state is 'Состояние пользователя';
