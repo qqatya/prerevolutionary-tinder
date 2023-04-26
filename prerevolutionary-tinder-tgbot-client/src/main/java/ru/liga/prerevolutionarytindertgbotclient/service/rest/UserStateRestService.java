@@ -17,11 +17,11 @@ import org.springframework.web.client.RestTemplate;
 import ru.liga.prerevolutionarytindertgbotclient.model.BotState;
 
 @Service
-public class UserStateService {
+public class UserStateRestService {
     private final Environment env;
     private final RestTemplate restTemplate;
 
-    public UserStateService(Environment env, RestTemplateBuilder restTemplateBuilder) {
+    public UserStateRestService(Environment env, RestTemplateBuilder restTemplateBuilder) {
         this.env = env;
         this.restTemplate = restTemplateBuilder.build();
     }
@@ -65,7 +65,7 @@ public class UserStateService {
     @AllArgsConstructor
     @NoArgsConstructor
     @Getter
-    private class State {
+    private static class State {
         String userId;
         String state;
     }

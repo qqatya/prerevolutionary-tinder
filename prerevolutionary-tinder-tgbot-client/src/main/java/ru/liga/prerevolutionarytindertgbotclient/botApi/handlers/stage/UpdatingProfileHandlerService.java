@@ -13,6 +13,8 @@ import ru.liga.prerevolutionarytindertgbotclient.model.BotStage;
 import ru.liga.prerevolutionarytindertgbotclient.model.BotState;
 import ru.liga.prerevolutionarytindertgbotclient.repository.UserDataCacheStore;
 
+import java.util.List;
+
 @Slf4j
 @Component
 public class UpdatingProfileHandlerService implements StageHandler {
@@ -26,16 +28,16 @@ public class UpdatingProfileHandlerService implements StageHandler {
         this.queryHandlersFactory = queryHandlersFactory;
     }
 
-    public PartialBotApiMethod<?> handleMessage(Message message, BotState botState) {
+    public List<PartialBotApiMethod<?>> handleMessage(Message message, BotState botState) {
         long userId = message.getFrom().getId();
-        PartialBotApiMethod<?> replyToUser = messageHandlersFactory.getHandler(botState).handle(message);
+        List<PartialBotApiMethod<?>> replyToUser = messageHandlersFactory.getHandler(botState).handle(message);
         userDataCache.saveUserProfile(userId, userDataCache.getUserProfile(userId));
         return replyToUser;
     }
 
-    public PartialBotApiMethod<?> handleCallbackQuery(CallbackQuery callbackQuery, BotState botState) {
+    public List<PartialBotApiMethod<?>> handleCallbackQuery(CallbackQuery callbackQuery, BotState botState) {
         long userId = callbackQuery.getFrom().getId();
-        PartialBotApiMethod<?> replyToUser = queryHandlersFactory.getHandler(botState).handle(callbackQuery);
+        List<PartialBotApiMethod<?>> replyToUser = queryHandlersFactory.getHandler(botState).handle(callbackQuery);
         userDataCache.saveUserProfile(userId, userDataCache.getUserProfile(userId));
         return replyToUser;
     }
@@ -48,7 +50,7 @@ public class UpdatingProfileHandlerService implements StageHandler {
 //    }
 
     @Override
-    public PartialBotApiMethod<?> handle(BotApiObject apiObject, BotState botState) {
+    public List<PartialBotApiMethod<?>> handle(BotApiObject apiObject, BotState botState) {
         if (apiObject instanceof Message) {
             return handleMessage((Message) apiObject, botState);
         }

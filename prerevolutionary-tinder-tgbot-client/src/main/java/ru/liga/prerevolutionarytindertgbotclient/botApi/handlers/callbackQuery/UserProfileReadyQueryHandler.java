@@ -8,25 +8,27 @@ import ru.liga.prerevolutionarytindertgbotclient.model.Gender;
 import ru.liga.prerevolutionarytindertgbotclient.model.UserProfile;
 import ru.liga.prerevolutionarytindertgbotclient.repository.UserDataCacheStore;
 import ru.liga.prerevolutionarytindertgbotclient.service.ReplyMessagesService;
-import ru.liga.prerevolutionarytindertgbotclient.service.rest.UserProfileService;
-import ru.liga.prerevolutionarytindertgbotclient.service.rest.UserStateService;
+import ru.liga.prerevolutionarytindertgbotclient.service.rest.UserProfileRestService;
+import ru.liga.prerevolutionarytindertgbotclient.service.rest.UserStateRestService;
+
+import java.util.List;
 
 @Component
 public class UserProfileReadyQueryHandler implements CallbackQueryHandler {
     private final ReplyMessagesService replyMessagesService;
     private final UserDataCacheStore userDataCacheStore;
 
-    private final UserProfileService userProfileService;
-    private final UserStateService userStateService;
+    private final UserProfileRestService userProfileRestService;
+    private final UserStateRestService userStateRestService;
 
-    public UserProfileReadyQueryHandler(ReplyMessagesService replyMessagesService, UserDataCacheStore userDataCacheStore, UserProfileService userProfileService, UserStateService userStateService) {
+    public UserProfileReadyQueryHandler(ReplyMessagesService replyMessagesService, UserDataCacheStore userDataCacheStore, UserProfileRestService userProfileRestService, UserStateRestService userStateRestService) {
         this.replyMessagesService = replyMessagesService;
         this.userDataCacheStore = userDataCacheStore;
-        this.userProfileService = userProfileService;
-        this.userStateService = userStateService;
+        this.userProfileRestService = userProfileRestService;
+        this.userStateRestService = userStateRestService;
     }
 
-    public PartialBotApiMethod<?> handle(CallbackQuery callbackQuery) {
+    public List<PartialBotApiMethod<?>> handle(CallbackQuery callbackQuery) {
         String data = callbackQuery.getData();
         long userId = callbackQuery.getFrom().getId();
         UserProfile userProfile = userDataCacheStore.getUserProfile(callbackQuery.getFrom().getId());
@@ -41,10 +43,10 @@ public class UserProfileReadyQueryHandler implements CallbackQueryHandler {
             userProfile.setSearch(Gender.ALL);
         }
         userProfile.setUserId(userId);
-        userProfileService.postUserProfile(userDataCacheStore.getUserProfile(userId));
-        byte[] image = userProfileService.getUserImage(userId);
-        userStateService.updateUserState(String.valueOf(userId), BotState.SHOW_MAIN_MENU);
-        return replyMessagesService.getPhotoMessage(callbackQuery.getMessage().getChatId(), image, BotState.SHOW_MAIN_MENU);
+        userProfileRestService.postUserProfile(userDataCacheStore.getUserProfile(userId));
+        byte[] image = userProfileRestService.getUserImage(userId);
+        userStateRestService.updateUserState(String.valueOf(userId), BotState.SHOW_MAIN_MENU);
+        return List.of(replyMessagesService.getPhotoMessage(callbackQuery.getMessage().getChatId(), image, BotState.SHOW_MAIN_MENU));
     }
 
     public BotState getHandlerName() {

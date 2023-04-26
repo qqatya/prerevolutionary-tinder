@@ -7,6 +7,8 @@ import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import ru.liga.prerevolutionarytindertgbotclient.botApi.handlers.stage.StageHandlersFactory;
 import ru.liga.prerevolutionarytindertgbotclient.model.BotState;
 
+import java.util.List;
+
 @Component
 @Slf4j
 public class BotStageContext {
@@ -16,7 +18,7 @@ public class BotStageContext {
 
     }
 
-    public PartialBotApiMethod<?> processData(BotState currentState, BotApiObject message) {
+    public List<PartialBotApiMethod<?>> processData(BotState currentState, BotApiObject message) {
         log.debug("Текущее состояние юзера: " + currentState);
         return stageHandlersFactory.getHandler(currentState).handle(message, currentState);
     }

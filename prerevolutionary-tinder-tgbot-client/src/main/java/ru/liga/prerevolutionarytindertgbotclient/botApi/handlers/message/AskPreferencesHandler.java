@@ -10,30 +10,30 @@ import ru.liga.prerevolutionarytindertgbotclient.model.BotState;
 import ru.liga.prerevolutionarytindertgbotclient.model.Gender;
 import ru.liga.prerevolutionarytindertgbotclient.repository.UserDataCacheStore;
 import ru.liga.prerevolutionarytindertgbotclient.service.ReplyMessagesService;
-import ru.liga.prerevolutionarytindertgbotclient.service.rest.UserStateService;
+import ru.liga.prerevolutionarytindertgbotclient.service.rest.UserStateRestService;
 
 import java.util.List;
 @Component
 public class AskPreferencesHandler implements MessageHandler {
     private final UserDataCacheStore userDataCache;
-    private final UserStateService userStateService;
+    private final UserStateRestService userStateRestService;
     private final ReplyMessagesService messagesService;
 
-    public AskPreferencesHandler(UserDataCacheStore userDataCache, UserStateService userStateService, ReplyMessagesService messagesService) {
+    public AskPreferencesHandler(UserDataCacheStore userDataCache, UserStateRestService userStateRestService, ReplyMessagesService messagesService) {
         this.userDataCache = userDataCache;
-        this.userStateService = userStateService;
+        this.userStateRestService = userStateRestService;
         this.messagesService = messagesService;
     }
 
     @Override
-    public PartialBotApiMethod<?> handle(Message message) {
+    public List<PartialBotApiMethod<?>> handle(Message message) {
         SendMessage replyToUser;
         long userId = message.getFrom().getId();
         userDataCache.getUserProfile(userId).setDescription(message.getText());
         replyToUser = messagesService.getReplyMessage(message.getChatId(), "Кого вы ищите?", BotState.USER_PROFILE_IS_READY);
         replyToUser.setReplyMarkup(getInlineMessageButtons());
-        userStateService.updateUserState(String.valueOf(userId), BotState.USER_PROFILE_IS_READY);
-        return replyToUser;
+        userStateRestService.updateUserState(String.valueOf(userId), BotState.USER_PROFILE_IS_READY);
+        return List.of(replyToUser);
     }
         private InlineKeyboardMarkup getInlineMessageButtons() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();

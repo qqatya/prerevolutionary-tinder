@@ -8,32 +8,30 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import ru.liga.prerevolutionarytindertgbotclient.model.BotState;
 import ru.liga.prerevolutionarytindertgbotclient.model.Gender;
-import ru.liga.prerevolutionarytindertgbotclient.repository.UserDataCacheStore;
 import ru.liga.prerevolutionarytindertgbotclient.service.ReplyMessagesService;
-import ru.liga.prerevolutionarytindertgbotclient.service.rest.UserStateService;
+import ru.liga.prerevolutionarytindertgbotclient.service.rest.UserStateRestService;
 
 import java.util.List;
 
 @Component
 public class AskGenderHandler implements MessageHandler {
     private final ReplyMessagesService messagesService;
-    private final UserDataCacheStore userDataCacheStore;
-    private final UserStateService userStateService;
+    private final UserStateRestService userStateRestService;
 
-    public AskGenderHandler(ReplyMessagesService messagesService, UserDataCacheStore userDataCacheStore, UserStateService userStateService) {
+    public AskGenderHandler(ReplyMessagesService messagesService, UserStateRestService userStateRestService) {
         this.messagesService = messagesService;
-        this.userDataCacheStore = userDataCacheStore;
-        this.userStateService = userStateService;
+        this.userStateRestService = userStateRestService;
     }
 
     @Override
-    public PartialBotApiMethod<?> handle(Message message) {
+    public List<PartialBotApiMethod<?>> handle(Message message) {
 
         SendMessage replyToUser = messagesService.getReplyMessage(message.getChatId(), "Вы сударь иль сударыня?", BotState.ASK_NAME);
         replyToUser.setReplyMarkup(getInlineMessageButtons());
-        userStateService.updateUserState(message.getFrom().getId().toString(), BotState.ASK_NAME);
-        return replyToUser;
+        userStateRestService.updateUserState(message.getFrom().getId().toString(), BotState.ASK_NAME);
+        return List.of(replyToUser);
     }
+
     private InlineKeyboardMarkup getInlineMessageButtons() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton buttonMan = new InlineKeyboardButton();
@@ -46,6 +44,7 @@ public class AskGenderHandler implements MessageHandler {
         inlineKeyboardMarkup.setKeyboard(buttonList);
         return inlineKeyboardMarkup;
     }
+
     @Override
     public BotState getHandlerName() {
         return BotState.ASK_GENDER;

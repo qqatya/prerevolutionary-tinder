@@ -9,24 +9,26 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import ru.liga.prerevolutionarytindertgbotclient.model.BotState;
 import ru.liga.prerevolutionarytindertgbotclient.repository.UserDataCacheStore;
 import ru.liga.prerevolutionarytindertgbotclient.service.BotStageContext;
-import ru.liga.prerevolutionarytindertgbotclient.service.rest.UserProfileService;
-import ru.liga.prerevolutionarytindertgbotclient.service.rest.UserStateService;
+import ru.liga.prerevolutionarytindertgbotclient.service.rest.UserProfileRestService;
+import ru.liga.prerevolutionarytindertgbotclient.service.rest.UserStateRestService;
+
+import java.util.List;
 
 @Component
 @Slf4j
 public class TelegramFacade {
     private final BotStageContext botStageContext;
     private final UserDataCacheStore userDataCache;
-    private final UserStateService userStateService;
+    private final UserStateRestService userStateRestService;
 
-    public TelegramFacade(BotStageContext botStageContext, UserDataCacheStore userDataCache, UserProfileService userProfileService, UserStateService userStateService) {
+    public TelegramFacade(BotStageContext botStageContext, UserDataCacheStore userDataCache, UserProfileRestService userProfileRestService, UserStateRestService userStateRestService) {
         this.botStageContext = botStageContext;
         this.userDataCache = userDataCache;
-        this.userStateService = userStateService;
+        this.userStateRestService = userStateRestService;
     }
 
-    public PartialBotApiMethod<?> handleUpdate(Update update) {
-        PartialBotApiMethod<?> replyMessage = null;
+    public List<PartialBotApiMethod<?>> handleUpdate(Update update) {
+        List<PartialBotApiMethod<?>> replyMessage = null;
         if (update.hasCallbackQuery()) {
             CallbackQuery callbackQuery = update.getCallbackQuery();
             log.info("New callbackQuery from User: {}, userId: {}, with data: {}", update.getCallbackQuery().getFrom().getUserName(),
@@ -44,19 +46,19 @@ public class TelegramFacade {
         return replyMessage;
     }
     public BotState getUserState(String userId) {
-        BotState botState = userStateService.getUserState(userId);
+        BotState botState = userStateRestService.getUserState(userId);
         if (botState == null) {
-            userStateService.postUserState(userId, BotState.ASK_GENDER);
+            userStateRestService.postUserState(userId, BotState.ASK_GENDER);
             return BotState.ASK_GENDER;
         }
         return botState;
     }
-    private PartialBotApiMethod<?> handleInputMessage(Message message) {
+    private List<PartialBotApiMethod<?>> handleInputMessage(Message message) {
         long userId = message.getFrom().getId();
         BotState botState = getUserState(String.valueOf(userId));
         return botStageContext.processData(botState, message);
     }
-    private PartialBotApiMethod<?> handleCallbackQuery(CallbackQuery callbackQuery) {
+    private List<PartialBotApiMethod<?>> handleCallbackQuery(CallbackQuery callbackQuery) {
         long userId = callbackQuery.getFrom().getId();
         BotState botState = getUserState(String.valueOf(userId));
         return botStageContext.processData(botState, callbackQuery);

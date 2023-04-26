@@ -7,6 +7,8 @@ import ru.liga.prerevolutionarytindertgbotclient.botApi.handlers.message.Message
 import ru.liga.prerevolutionarytindertgbotclient.model.BotState;
 import ru.liga.prerevolutionarytindertgbotclient.service.ReplyMessagesService;
 
+import java.util.List;
+
 @Component
 public class ShowFavoritesMessageHandler implements MessageHandler {
     private final ReplyMessagesService replyMessagesService;
@@ -21,7 +23,7 @@ public class ShowFavoritesMessageHandler implements MessageHandler {
     }
 
     @Override
-    public PartialBotApiMethod<?> handle(Message message) {
-        return replyMessagesService.getReplyMessage(message.getChatId(), "Not yet implemented", getHandlerName());
+    public List<PartialBotApiMethod<?>> handle(Message message) {
+        return List.of(replyMessagesService.getReplyMessage(message.getChatId(), "Not yet implemented", getHandlerName()));
     }
 }

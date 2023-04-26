@@ -4,8 +4,10 @@ import org.telegram.telegrambots.meta.api.interfaces.BotApiObject;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import ru.liga.prerevolutionarytindertgbotclient.model.BotState;
 
+import java.util.List;
+
 public interface StateHandler<T extends BotApiObject> {
-    PartialBotApiMethod<?> handle(T apiObject);
+    List<PartialBotApiMethod<?>> handle(T apiObject);
 
     BotState getHandlerName();
 }

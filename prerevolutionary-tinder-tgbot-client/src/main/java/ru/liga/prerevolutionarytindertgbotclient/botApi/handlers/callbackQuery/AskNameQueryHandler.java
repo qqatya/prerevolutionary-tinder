@@ -8,21 +8,23 @@ import ru.liga.prerevolutionarytindertgbotclient.model.Gender;
 import ru.liga.prerevolutionarytindertgbotclient.repository.UserDataCacheStore;
 import ru.liga.prerevolutionarytindertgbotclient.model.UserProfile;
 import ru.liga.prerevolutionarytindertgbotclient.service.ReplyMessagesService;
-import ru.liga.prerevolutionarytindertgbotclient.service.rest.UserStateService;
+import ru.liga.prerevolutionarytindertgbotclient.service.rest.UserStateRestService;
+
+import java.util.List;
 
 @Component
 public class AskNameQueryHandler implements CallbackQueryHandler {
     private final ReplyMessagesService messagesService;
     private final UserDataCacheStore userDataCacheStore;
-    private final UserStateService userStateService;
+    private final UserStateRestService userStateRestService;
 
-    public AskNameQueryHandler(ReplyMessagesService messagesService, UserDataCacheStore userDataCacheStore, UserStateService userStateService) {
+    public AskNameQueryHandler(ReplyMessagesService messagesService, UserDataCacheStore userDataCacheStore, UserStateRestService userStateRestService) {
         this.messagesService = messagesService;
         this.userDataCacheStore = userDataCacheStore;
-        this.userStateService = userStateService;
+        this.userStateRestService = userStateRestService;
     }
     @Override
-    public PartialBotApiMethod<?> handle(CallbackQuery callbackQuery) {
+    public List<PartialBotApiMethod<?>> handle(CallbackQuery callbackQuery) {
         String data = callbackQuery.getData();
         UserProfile userProfile = userDataCacheStore.getUserProfile(callbackQuery.getFrom().getId());
         if (data.equals(Gender.MALE.getName())) {
@@ -31,9 +33,9 @@ public class AskNameQueryHandler implements CallbackQueryHandler {
         if (data.equals(Gender.FEMALE.getName())) {
             userProfile.setGender(Gender.FEMALE);
         }
-        userStateService.updateUserState(callbackQuery.getFrom().getId().toString(), BotState.ASK_DESCRIPTION);
-        return messagesService.getReplyMessage(callbackQuery.getMessage().getChatId(),
-                "Как вас величать, " + userProfile.getGender().getName() + "?", BotState.ASK_DESCRIPTION);
+        userStateRestService.updateUserState(callbackQuery.getFrom().getId().toString(), BotState.ASK_DESCRIPTION);
+        return List.of(messagesService.getReplyMessage(callbackQuery.getMessage().getChatId(),
+                "Как вас величать, " + userProfile.getGender().getName() + "?", BotState.ASK_DESCRIPTION));
     }
     @Override
     public BotState getHandlerName() {

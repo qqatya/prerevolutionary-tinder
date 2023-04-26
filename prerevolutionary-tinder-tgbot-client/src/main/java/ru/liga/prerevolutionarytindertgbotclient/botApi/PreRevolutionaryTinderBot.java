@@ -9,6 +9,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.List;
+
 @Component
 public class PreRevolutionaryTinderBot extends TelegramLongPollingBot {
     @Value("${bot-name}")
@@ -25,12 +27,20 @@ public class PreRevolutionaryTinderBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         try {
-            PartialBotApiMethod<?> replyMessageToUser = telegramFacade.handleUpdate(update);
-            if (replyMessageToUser instanceof SendPhoto) {
-                execute((SendPhoto) replyMessageToUser);
+            List<PartialBotApiMethod<?>> replyMessagesToUser = telegramFacade.handleUpdate(update);
+            replyMessagesToUser.forEach(this::sendReply);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendReply(PartialBotApiMethod<?> reply) {
+        try {
+            if (reply instanceof SendPhoto) {
+                execute((SendPhoto) reply);
             }
-            if (replyMessageToUser instanceof SendMessage) {
-                execute((SendMessage) replyMessageToUser);
+            if (reply instanceof SendMessage) {
+                execute((SendMessage) reply);
             }
         } catch (RuntimeException | TelegramApiException e) {
             e.printStackTrace();
