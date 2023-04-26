@@ -16,11 +16,11 @@ import java.util.List;
 @Repository
 @RequiredArgsConstructor
 public class SearchRepositoryImpl implements SearchRepository {
-    private static final String SQL_GET_PROFILES_OF_ALL_GENDERS = "select user_id, name, gender, search, description "
-            + "from pretinder.profile where search = 'ALL' or search = :user_gender and user_id != :user_id "
+    private static final String SQL_GET_PROFILES_OF_ALL_GENDERS = "select user_id, name, gender, search, header, " +
+            "description from pretinder.profile where search = 'ALL' or search = :user_gender and user_id != :user_id "
             + "order by :order";
-    private static final String SQL_GET_PROFILES_OF_SPECIFIED_GENDER = "select user_id, name, gender, search, " +
-            "description from pretinder.profile where gender = :user_preference " +
+    private static final String SQL_GET_PROFILES_OF_SPECIFIED_GENDER = "select user_id, name, gender, search, header, "
+            + "description from pretinder.profile where gender = :user_preference " +
             "and (search = :user_gender or SEARCH = 'ALL') and user_id != :user_id order by :order";
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final ProfileMapper profileMapper;
