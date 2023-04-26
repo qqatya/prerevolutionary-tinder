@@ -1,7 +1,7 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
     <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
-        <property name="LOG_FILE" value="pretinder-translator" />
+        <property name="LOG_FILE" value="pretinder-server" />
         <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <file>${LOG_FILE}.log</file>
             <encoder>
