@@ -2,8 +2,8 @@ package ru.liga.prerevolutionarytinderserver.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,13 +27,14 @@ import java.net.URISyntaxException;
 @RequiredArgsConstructor
 @Slf4j
 public class ProfileController {
-    private static final String IMAGE_CREATOR_URL = "pretinder.image-creator.url";
-    private static final String TRANSLATOR_URL = "pretinder.translator.url";
-    private final Environment env;
     private final ProfileService profileService;
     private final FavoritesService favoritesService;
     private final SearchService searchService;
     private final LikeService likeService;
+    @Value("${pretinder.image-creator.url}")
+    private String imageCreatorUrl;
+    @Value("${pretinder.translator.url}")
+    private String translatorUrl;
 
     /**
      * Создание анкеты
@@ -47,7 +48,7 @@ public class ProfileController {
         Text name = new Text(profile.getName());
         Text description = new Text(profile.getDescription());
         try {
-            URI uri = new URI(env.getProperty(TRANSLATOR_URL) + "/translation");
+            URI uri = new URI(translatorUrl);
             profile.setName(restTemplate.postForObject(uri, name, Text.class).getText());
             profile.setDescription(restTemplate.postForObject(uri, description, Text.class).getText());
             log.debug("Finished name and description translation");
@@ -81,7 +82,7 @@ public class ProfileController {
         Text description = new Text(profile.getDescription());
 
         try {
-            URI uri = new URI(env.getProperty(TRANSLATOR_URL) + "/translation");
+            URI uri = new URI(translatorUrl);
             profile.setName(restTemplate.postForObject(uri, name, Text.class).getText());
             profile.setDescription(restTemplate.postForObject(uri, description, Text.class).getText());
             log.debug("Finished name and description translation");
@@ -104,7 +105,7 @@ public class ProfileController {
         RestTemplate restTemplate = new RestTemplate();
 
         try {
-            URI uri = new URI(env.getProperty(IMAGE_CREATOR_URL) + "/image");
+            URI uri = new URI(imageCreatorUrl);
             log.info("Receiving image from image-creator by userId: {}", userId);
             return restTemplate.postForObject(uri, profileDescription, byte[].class);
         } catch (URISyntaxException e) {
