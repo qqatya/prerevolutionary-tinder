@@ -28,7 +28,7 @@ public class FavoritesRepositoryImpl implements FavoritesRepository {
 
     @Override
     public List<Profile> findFavoritesByUserId(Pageable pageable, Long userId) {
-        Order order = !pageable.getSort().isEmpty() ? pageable.getSort().toList().get(0) : Order.by("id");
+        Order order = !pageable.getSort().isEmpty() ? pageable.getSort().toList().get(0) : Order.by("user_id");
         var params = new MapSqlParameterSource();
 
         params.addValue("user_id", userId);
@@ -39,7 +39,7 @@ public class FavoritesRepositoryImpl implements FavoritesRepository {
 
     @Override
     public List<Profile> findUsersHavingUserIdAsFavorite(Pageable pageable, Long userId) {
-        Order order = !pageable.getSort().isEmpty() ? pageable.getSort().toList().get(0) : Order.by("ID");
+        Order order = !pageable.getSort().isEmpty() ? pageable.getSort().toList().get(0) : Order.by("user_id");
         var params = new MapSqlParameterSource();
 
         params.addValue("favorite_user_id", userId);

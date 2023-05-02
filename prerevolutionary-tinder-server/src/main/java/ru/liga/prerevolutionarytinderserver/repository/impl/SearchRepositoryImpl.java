@@ -27,7 +27,7 @@ public class SearchRepositoryImpl implements SearchRepository {
 
     @Override
     public List<Profile> searchAllGenders(Pageable pageable, Long userId, GenderEnum userGender) {
-        Order order = !pageable.getSort().isEmpty() ? pageable.getSort().toList().get(0) : Order.by("id");
+        Order order = !pageable.getSort().isEmpty() ? pageable.getSort().toList().get(0) : Order.by("user_id");
         var params = new MapSqlParameterSource();
 
         params.addValue("user_id", userId);
@@ -40,7 +40,7 @@ public class SearchRepositoryImpl implements SearchRepository {
     @Override
     public List<Profile> searchSpecifiedGender(Pageable pageable, Long userId, GenderEnum userGender,
                                                GenderEnum preference) {
-        Order order = !pageable.getSort().isEmpty() ? pageable.getSort().toList().get(0) : Order.by("id");
+        Order order = !pageable.getSort().isEmpty() ? pageable.getSort().toList().get(0) : Order.by("user_id");
         var params = new MapSqlParameterSource();
 
         params.addValue("user_id", userId);
