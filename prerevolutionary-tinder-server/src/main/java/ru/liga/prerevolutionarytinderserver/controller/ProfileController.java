@@ -31,6 +31,7 @@ public class ProfileController {
     private final FavoritesService favoritesService;
     private final SearchService searchService;
     private final LikeService likeService;
+    private final RestTemplate restTemplate;
     @Value("${pretinder.image-creator.url}")
     private String imageCreatorUrl;
     @Value("${pretinder.translator.url}")
@@ -44,7 +45,6 @@ public class ProfileController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void createProfile(@RequestBody Profile profile) {
-        RestTemplate restTemplate = new RestTemplate();
         Text name = new Text(profile.getName());
         Text description = new Text(profile.getDescription());
         try {
@@ -77,7 +77,6 @@ public class ProfileController {
     @PutMapping(value = "/update/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateProfile(@PathVariable("userId") Long userId, @RequestBody Profile profile) {
-        RestTemplate restTemplate = new RestTemplate();
         Text name = new Text(profile.getName());
         Text description = new Text(profile.getDescription());
 
@@ -102,7 +101,6 @@ public class ProfileController {
     public byte[] getProfilePicture(@PathVariable("userId") Long userId) {
         Profile profile = profileService.getProfile(userId);
         ProfileDescription profileDescription = new ProfileDescription(profile.getHeader(), profile.getDescription());
-        RestTemplate restTemplate = new RestTemplate();
 
         try {
             URI uri = new URI(imageCreatorUrl);
