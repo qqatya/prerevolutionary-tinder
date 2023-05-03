@@ -15,11 +15,6 @@
         <java.version>17</java.version>
         <postgres.version>42.6.0</postgres.version>
         <liquibase.version>4.20.0</liquibase.version>
-        <liquibase.host>localhost</liquibase.host>
-        <liquibase.port>5432</liquibase.port>
-        <liquibase.db>pretinder</liquibase.db>
-        <liquibase.user>pretinder</liquibase.user>
-        <liquibase.password>pretinder</liquibase.password>
         <maven-assembly.version>2.4.1</maven-assembly.version>
     </properties>
 
