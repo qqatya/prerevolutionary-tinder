@@ -4,19 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import ru.liga.prerevolutionarytinderserver.enums.GenderEnum;
+import ru.liga.prerevolutionarytinderserver.mapper.CountMapper;
 import ru.liga.prerevolutionarytinderserver.mapper.ProfileMapper;
 import ru.liga.prerevolutionarytinderserver.model.PageableProfile;
 import ru.liga.prerevolutionarytinderserver.model.Profile;
 import ru.liga.prerevolutionarytinderserver.repository.SearchRepository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 @Repository
@@ -36,7 +33,7 @@ public class SearchRepositoryImpl implements SearchRepository {
             + "and (search = :user_gender or SEARCH = 'ALL') and user_id != :user_id";
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final ProfileMapper profileMapper;
-    private final IntegerMapper integerMapper;
+    private final CountMapper countMapper;
 
 
     @Override
@@ -49,7 +46,7 @@ public class SearchRepositoryImpl implements SearchRepository {
         params.addValue("offset", pageable.getOffset());
         List<Profile> searchResult = jdbcTemplate.query(SQL_GET_PROFILES_OF_ALL_GENDERS,
                 params, profileMapper);
-        Integer totalSearchCount = jdbcTemplate.query(SQL_GET_PROFILES_COUNT_OF_ALL_GENDERS, params, integerMapper)
+        Integer totalSearchCount = jdbcTemplate.query(SQL_GET_PROFILES_COUNT_OF_ALL_GENDERS, params, countMapper)
                 .stream().findFirst().orElseThrow();
 
         log.debug("Found {} search results", totalSearchCount);
@@ -72,7 +69,7 @@ public class SearchRepositoryImpl implements SearchRepository {
         params.addValue("offset", pageable.getOffset());
         List<Profile> searchResult = jdbcTemplate.query(SQL_GET_PROFILES_OF_SPECIFIED_GENDER,
                 params, profileMapper);
-        Integer totalSearchCount = jdbcTemplate.query(SQL_GET_PROFILES_COUNT_OF_SPECIFIED_GENDER, params, integerMapper)
+        Integer totalSearchCount = jdbcTemplate.query(SQL_GET_PROFILES_COUNT_OF_SPECIFIED_GENDER, params, countMapper)
                 .stream().findFirst().orElseThrow();
 
         log.debug("Found {} search results", totalSearchCount);
@@ -82,14 +79,5 @@ public class SearchRepositoryImpl implements SearchRepository {
         return new PageableProfile(searchResultPage.getContent(), searchResultPage.getTotalPages(),
                 searchResultPage.getTotalElements());
 
-    }
-
-    @Component
-    static class IntegerMapper implements RowMapper<Integer> {
-
-        @Override
-        public Integer mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return rs.getInt("count");
-        }
     }
 }

@@ -1,9 +1,7 @@
 package ru.liga.prerevolutionarytinderserver.repository;
 
 import org.springframework.data.domain.Pageable;
-import ru.liga.prerevolutionarytinderserver.model.Profile;
-
-import java.util.List;
+import ru.liga.prerevolutionarytinderserver.model.PageableFavorite;
 
 public interface FavoritesRepository {
     /**
@@ -11,16 +9,8 @@ public interface FavoritesRepository {
      *
      * @param pageable Информация по номеру страницы и количеству записей в ней
      * @param userId   Идентификатор пользователя
-     * @return Страница с желаемым количестаом пользователей
+     * @return Объект, содержащий всех любимцев и информацию по количеству страниц и любимцев
      */
-    List<Profile> findFavoritesByUserId(Pageable pageable, Long userId);
+    PageableFavorite findFavoritesByUserId(Pageable pageable, Long userId);
 
-    /**
-     * Постраничный поиск пользователей, у которых текущий пользователь в любимцах
-     *
-     * @param pageable Информация по номеру страницы и количеству записей в ней
-     * @param userId   Идентификатор пользователя
-     * @return Страница с желаемым количестаом пользователей
-     */
-    List<Profile> findUsersHavingUserIdAsFavorite(Pageable pageable, Long userId);
 }

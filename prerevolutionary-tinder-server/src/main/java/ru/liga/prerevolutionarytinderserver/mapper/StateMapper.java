@@ -7,6 +7,9 @@ import ru.liga.prerevolutionarytinderserver.model.State;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Маппер состояния пользователя к таблице user_state
+ */
 @Component
 public class StateMapper implements RowMapper<State> {
     @Override
