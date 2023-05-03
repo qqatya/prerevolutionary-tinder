@@ -1,28 +1,26 @@
 package ru.liga.prerevolutionarytinderimagecreator.service.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.docx4j.org.capaxit.imagegenerator.Margin;
 import org.docx4j.org.capaxit.imagegenerator.TextImage;
-import org.docx4j.org.capaxit.imagegenerator.TextWrapper;
 import org.docx4j.org.capaxit.imagegenerator.imageexporter.exporters.PngImageWriter;
 import org.docx4j.org.capaxit.imagegenerator.impl.TextImageImpl;
-import org.docx4j.org.capaxit.imagegenerator.textalign.GreedyTextWrapper;
 import org.springframework.stereotype.Service;
 import ru.liga.prerevolutionarytinderimagecreator.exception.BackgroundNotFoundException;
-import ru.liga.prerevolutionarytinderimagecreator.exception.FontRegistrationException;
 import ru.liga.prerevolutionarytinderimagecreator.exception.ImageCreationException;
 import ru.liga.prerevolutionarytinderimagecreator.service.ImageCreationService;
+import ru.liga.prerevolutionarytinderimagecreator.service.ResponsiveFontService;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class ImageCreationServiceImpl implements ImageCreationService {
     /**
@@ -45,22 +43,22 @@ public class ImageCreationServiceImpl implements ImageCreationService {
     private static final String FONT_PLAIN = "/static/fonts/OldStandard-Regular.ttf";
     private static final String FONT_BOLD = "/static/fonts/OldStandard-Bold.ttf";
     private static final String BACKGROUND = "/static/prerev-background.jpg";
-    private static final int PLAIN_COEFFICIENT = 1;
-    private static final double BOLD_COEFFICIENT = 1.8;
+
+    private final ResponsiveFontService responsiveFontService;
 
     @Override
     public byte[] createPicture(String header, String description) {
         log.info("Start creating image");
         Margin margin = new Margin(LEFT, TOP, RIGHT, BOTTOM);
-        TextImage testImage = new TextImageImpl(WIDTH, HEIGHT, margin);
+        TextImage textImage = new TextImageImpl(WIDTH, HEIGHT, margin);
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         int initialFontSize = 1;
 
-        registerFont(ge, FONT_PLAIN, false);
+        responsiveFontService.registerFont(ge, FONT_PLAIN, false);
         log.debug("Registered font: {}", FONT_PLAIN);
-        registerFont(ge, FONT_BOLD, true);
+        responsiveFontService.registerFont(ge, FONT_BOLD, true);
         log.debug("Registered font: {}", FONT_BOLD);
-        Map<Integer, Integer> fontSizes = getFontSize(testImage, margin, header, description,
+        Map<Integer, Integer> fontSizes = responsiveFontService.getFontSize(textImage, margin, header, description,
                 new Font("Old Standard TT", Font.BOLD, initialFontSize),
                 new Font("Old Standard TT", Font.BOLD, initialFontSize));
         Font plain = new Font("Old Standard TT", Font.PLAIN, fontSizes.get(Font.PLAIN));
@@ -68,71 +66,21 @@ public class ImageCreationServiceImpl implements ImageCreationService {
         int oX = 0;
         int oY = 0;
 
-        testImage.write(getBackground(), oX, oY);
+        textImage.write(getBackground(), oX, oY);
         log.debug("Applied image background");
-        testImage.withFont(bold).wrap(true).write(header);
+        textImage.withFont(bold).wrap(true).write(header);
         log.debug("Applied header text");
-        testImage.withFont(plain).wrap(true).write(description);
+        textImage.withFont(plain).wrap(true).write(description);
         log.debug("Applied description text");
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
             PngImageWriter pngImageWriter = new PngImageWriter();
-            pngImageWriter.writeImageToOutputStream(testImage, os);
+            pngImageWriter.writeImageToOutputStream(textImage, os);
             log.info("Successfully created image");
             return os.toByteArray();
         } catch (IOException e) {
             throw new ImageCreationException();
         }
 
-    }
-
-    private void registerFont(GraphicsEnvironment ge, String filePath, boolean isBold) {
-        try (InputStream stream = ImageCreationServiceImpl.class
-                .getResourceAsStream(filePath)) {
-            if (isBold) {
-                ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, stream).deriveFont(Font.BOLD));
-            } else {
-                ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, stream).deriveFont(Font.PLAIN));
-            }
-        } catch (IOException | FontFormatException e) {
-            throw new FontRegistrationException("Не удалось создать шрифт");
-        }
-    }
-
-    private Map<Integer, Integer> getFontSize(TextImage textImage, Margin margin, String header, String description,
-                                              Font bold, Font plain) {
-        TextImageImpl image = new TextImageImpl(textImage.getWidth(), textImage.getHeight(), margin);
-        int maxTextHeight = textImage.getHeight() - margin.getTop() - margin.getBottom();
-        int maxLineWidth = image.getWidth() - margin.getLeft() - margin.getRight();
-        int boldTextHeight = 0;
-        int plainTextHeight = 0;
-        int headerLineWidth = 0;
-        Font currentBold = bold;
-        Font currentPlain = plain;
-
-        while (boldTextHeight + plainTextHeight < maxTextHeight && headerLineWidth < maxLineWidth - 1) {
-            int currentPlainSize = currentPlain.getSize() + PLAIN_COEFFICIENT;
-            int currentBoldSize = (int) (currentPlainSize * BOLD_COEFFICIENT);
-
-            currentBold = new Font(currentBold.getFontName(), currentBold.getStyle(), currentBoldSize);
-            currentPlain = new Font(currentBold.getFontName(), currentBold.getStyle(), currentPlainSize);
-            Canvas canvas = new Canvas();
-            FontMetrics fmBold = canvas.getFontMetrics(currentBold);
-            FontMetrics fmPlain = canvas.getFontMetrics(currentPlain);
-            TextWrapper textWrapper = new GreedyTextWrapper();
-            List<String> wrappedBoldText = textWrapper.doWrap(header, maxLineWidth, fmBold);
-            List<String> wrappedPlainText = textWrapper.doWrap(description, maxLineWidth, fmPlain);
-
-            headerLineWidth = fmBold.stringWidth(header);
-            boldTextHeight = wrappedBoldText.size() * fmBold.getHeight();
-            plainTextHeight = wrappedPlainText.size() * fmPlain.getHeight();
-        }
-        Map<Integer, Integer> fontSizes = new HashMap<>();
-
-        log.debug("Header font size: {}", currentBold.getSize());
-        log.debug("Description font size {}", currentPlain.getSize());
-        fontSizes.put(Font.BOLD, currentBold.getSize());
-        fontSizes.put(Font.PLAIN, currentPlain.getSize());
-        return fontSizes;
     }
 
     private Image getBackground() {
