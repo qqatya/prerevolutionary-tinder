@@ -1,6 +1,7 @@
 package ru.liga.prerevolutionarytinderserver.repository.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class UserStateRepositoryImpl implements UserStateRepository {
     private static final String SQL_INSERT_STATE = "insert into pretinder.user_state (user_id, state) "
             + "values (:user_id, :state)";
@@ -23,21 +25,25 @@ public class UserStateRepositoryImpl implements UserStateRepository {
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
     @Override
-    public void insertUserState(State state) {
+    public Optional<State> insertUserState(State state) {
         var params = new MapSqlParameterSource();
 
         params.addValue("user_id", state.getUserId());
         params.addValue("state", state.getState());
         jdbcTemplate.update(SQL_INSERT_STATE, params);
+        log.debug("Current user state: {}", state.getState());
+        return getUserStateByUserId(state.getUserId());
     }
 
     @Override
-    public void updateUserState(Long userId, State state) {
+    public Optional<State> updateUserState(Long userId, State state) {
         var params = new MapSqlParameterSource();
 
         params.addValue("user_id", userId);
         params.addValue("state", state.getState());
         jdbcTemplate.update(SQL_UPDATE_STATE, params);
+        log.debug("Current user state: {}", state.getState());
+        return getUserStateByUserId(userId);
     }
 
     @Override

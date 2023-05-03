@@ -8,7 +8,7 @@ import ru.liga.prerevolutionarytinderimagecreator.model.ProfileDescription;
 import ru.liga.prerevolutionarytinderimagecreator.service.ImageCreationService;
 
 @RestController
-@RequestMapping("image")
+@RequestMapping("images")
 @RequiredArgsConstructor
 public class ImageCreationController {
     private final ImageCreationService imageCreationService;

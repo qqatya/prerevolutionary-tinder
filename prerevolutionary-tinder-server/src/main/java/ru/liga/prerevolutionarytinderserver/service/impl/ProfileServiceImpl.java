@@ -15,10 +15,11 @@ public class ProfileServiceImpl implements ProfileService {
     private final ProfileRepository profileRepository;
 
     @Override
-    public void createProfile(Profile profile) {
+    public Profile createProfile(Profile profile) {
         parseDescription(profile);
-        profileRepository.insertProfile(profile);
-        log.info("Created profile by userId: {}", profile.getUserId());
+        log.info("Creating profile by userId: {}", profile.getUserId());
+        return profileRepository.insertProfile(profile)
+                .orElseThrow(() -> new ProfileNotFoundException(profile.getUserId()));
     }
 
     @Override
@@ -29,14 +30,15 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    public void updateProfile(Profile profile, Long userId) {
+    public Profile updateProfile(Profile profile, Long userId) {
         profileRepository.getProfileByUserId(userId)
                 .orElseThrow(() -> new ProfileNotFoundException(profile.getUserId()));
         if (profile.getDescription() != null) {
             parseDescription(profile);
         }
-        profileRepository.updateProfile(userId, profile);
         log.info("Updated profile by userId {}", userId);
+        return profileRepository.updateProfile(userId, profile)
+                .orElseThrow(() -> new ProfileNotFoundException(userId));
     }
 
     private void parseDescription(Profile profile) {

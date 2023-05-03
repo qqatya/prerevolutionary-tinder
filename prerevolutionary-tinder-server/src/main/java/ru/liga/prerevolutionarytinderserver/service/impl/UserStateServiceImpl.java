@@ -15,17 +15,17 @@ public class UserStateServiceImpl implements UserStateService {
     private final UserStateRepository userStateRepository;
 
     @Override
-    public void createUserState(State state) {
-        userStateRepository.insertUserState(state);
-        log.info("Created new state for userId: {}", state.getUserId());
-        log.debug("Current user state: {}", state.getState());
+    public State createUserState(State state) {
+        log.info("Creating new state for userId: {}", state.getUserId());
+        return userStateRepository.insertUserState(state)
+                .orElseThrow(StateNotFoundException::new);
     }
 
     @Override
-    public void updateUserState(Long userId, State state) {
-        userStateRepository.updateUserState(userId, state);
-        log.info("Updated user state for userId: {}", userId);
-        log.debug("Current user state: {}", state.getState());
+    public State updateUserState(Long userId, State state) {
+        log.info("Updating user state for userId: {}", userId);
+        return userStateRepository.updateUserState(userId, state)
+                .orElseThrow(StateNotFoundException::new);
     }
 
     @Override

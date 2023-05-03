@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -22,7 +21,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 @RestController
-@RequestMapping("profile")
+@RequestMapping("profiles")
 @PropertySource("classpath:application.properties")
 @RequiredArgsConstructor
 @Slf4j
@@ -41,10 +40,10 @@ public class ProfileController {
      * Создание анкеты
      *
      * @param profile Объект анкеты
+     * @return Созданная анкета
      */
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void createProfile(@RequestBody Profile profile) {
+    public Profile createProfile(@RequestBody Profile profile) {
         Text name = new Text(profile.getName());
         Text description = new Text(profile.getDescription());
         try {
@@ -55,7 +54,7 @@ public class ProfileController {
         } catch (URISyntaxException e) {
             throw new ConnectionException();
         }
-        profileService.createProfile(profile);
+        return profileService.createProfile(profile);
     }
 
     /**
@@ -73,10 +72,10 @@ public class ProfileController {
      * Обновление анкеты
      *
      * @param profile Объект анкеты
+     * @return Обновленная анкета
      */
-    @PutMapping(value = "/update/{userId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateProfile(@PathVariable("userId") Long userId, @RequestBody Profile profile) {
+    @PutMapping(value = "/{userId}")
+    public Profile updateProfile(@PathVariable("userId") Long userId, @RequestBody Profile profile) {
         Text name = new Text(profile.getName());
         Text description = new Text(profile.getDescription());
 
@@ -88,7 +87,7 @@ public class ProfileController {
         } catch (URISyntaxException e) {
             throw new ConnectionException();
         }
-        profileService.updateProfile(profile, userId);
+        return profileService.updateProfile(profile, userId);
     }
 
     /**
@@ -97,7 +96,7 @@ public class ProfileController {
      * @param userId Идентификатор пользователя
      * @return Байтовый массив, содержащий изображение
      */
-    @GetMapping(value = "/{userId}/image", produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = "/{userId}/images", produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] getProfilePicture(@PathVariable("userId") Long userId) {
         Profile profile = profileService.getProfile(userId);
         ProfileDescription profileDescription = new ProfileDescription(profile.getHeader(), profile.getDescription());

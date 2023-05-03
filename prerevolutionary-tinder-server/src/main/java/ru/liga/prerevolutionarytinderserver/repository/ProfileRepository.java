@@ -7,12 +7,15 @@ import java.util.Optional;
 public interface ProfileRepository {
     /**
      * Создание анкеты
+     *
      * @param profile Объект анкеты
+     * @return Созданная анкета
      */
-    void insertProfile(Profile profile);
+    Optional<Profile> insertProfile(Profile profile);
 
     /**
      * Получение анкеты по идентификатору
+     *
      * @param userId Идентификатор пользователя
      * @return Объект анкеты
      */
@@ -20,7 +23,9 @@ public interface ProfileRepository {
 
     /**
      * Обновление анкеты
+     *
      * @param profile Объект анкеты
+     * @return Обновленная анкета
      */
-    void updateProfile(Long userId, Profile profile);
+    Optional<Profile> updateProfile(Long userId, Profile profile);
 }

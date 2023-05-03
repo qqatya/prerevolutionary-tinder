@@ -1,13 +1,12 @@
 package ru.liga.prerevolutionarytinderserver.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.liga.prerevolutionarytinderserver.model.State;
 import ru.liga.prerevolutionarytinderserver.service.UserStateService;
 
 @RestController
-@RequestMapping("state")
+@RequestMapping("states")
 @RequiredArgsConstructor
 public class UserStateController {
     private final UserStateService userStateService;
@@ -18,9 +17,8 @@ public class UserStateController {
      * @param state Состояние
      */
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void createUserState(@RequestBody State state) {
-        userStateService.createUserState(state);
+    public State createUserState(@RequestBody State state) {
+        return userStateService.createUserState(state);
     }
 
     /**
@@ -28,10 +26,9 @@ public class UserStateController {
      *
      * @param userId Идентификатор пользователя
      */
-    @PutMapping(value = "/update/{userId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateUserState(@PathVariable("userId") Long userId, @RequestBody State state) {
-        userStateService.updateUserState(userId, state);
+    @PutMapping(value = "/{userId}")
+    public State updateUserState(@PathVariable("userId") Long userId, @RequestBody State state) {
+        return userStateService.updateUserState(userId, state);
     }
 
     /**

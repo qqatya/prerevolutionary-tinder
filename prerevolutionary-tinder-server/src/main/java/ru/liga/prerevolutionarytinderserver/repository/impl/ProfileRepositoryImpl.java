@@ -26,7 +26,7 @@ public class ProfileRepositoryImpl implements ProfileRepository {
     private final ProfileMapper profileMapper;
 
     @Override
-    public void insertProfile(Profile profile) {
+    public Optional<Profile> insertProfile(Profile profile) {
         var params = new MapSqlParameterSource();
 
         params.addValue("user_id", profile.getUserId());
@@ -37,6 +37,8 @@ public class ProfileRepositoryImpl implements ProfileRepository {
         params.addValue("description", profile.getDescription());
         params.addValue("delete_dttm", null);
         jdbcTemplate.update(SQL_INSERT_PROFILE, params);
+
+        return getProfileByUserId(profile.getUserId());
     }
 
     @Override
@@ -47,13 +49,13 @@ public class ProfileRepositoryImpl implements ProfileRepository {
         return jdbcTemplate.query(
                         SQL_GET_PROFILE_BY_USER_ID,
                         params,
-                        profileMapper
-                ).stream()
+                        profileMapper)
+                .stream()
                 .findFirst();
     }
 
     @Override
-    public void updateProfile(Long userId, Profile profile) {
+    public Optional<Profile> updateProfile(Long userId, Profile profile) {
         var params = new MapSqlParameterSource();
 
         params.addValue("name", profile.getName());
@@ -63,5 +65,7 @@ public class ProfileRepositoryImpl implements ProfileRepository {
         params.addValue("description", profile.getDescription());
         params.addValue("user_id", userId);
         jdbcTemplate.update(SQL_UPDATE_PROFILE, params);
+
+        return getProfileByUserId(userId);
     }
 }

@@ -9,16 +9,18 @@ public interface UserStateRepository {
      * Создание состояния пользователя
      *
      * @param state Состояние
+     * @return Созданное состояние
      */
-    void insertUserState(State state);
+    Optional<State> insertUserState(State state);
 
     /**
      * Обновление состояния пользователя
      *
      * @param userId Идентификатор пользователя
      * @param state  Состояние
+     * @return Обновленное состояние
      */
-    void updateUserState(Long userId, State state);
+    Optional<State> updateUserState(Long userId, State state);
 
     /**
      * Получение состояния пользователя

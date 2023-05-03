@@ -9,7 +9,7 @@ import ru.liga.prerevolutionarytindertranslator.model.Text;
 import ru.liga.prerevolutionarytindertranslator.service.TranslationService;
 
 @RestController
-@RequestMapping("translation")
+@RequestMapping("translations")
 @RequiredArgsConstructor
 public class TranslationController {
 

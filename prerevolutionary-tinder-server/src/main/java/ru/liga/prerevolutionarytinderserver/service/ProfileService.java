@@ -5,12 +5,15 @@ import ru.liga.prerevolutionarytinderserver.model.Profile;
 public interface ProfileService {
     /**
      * Создание анкеты
+     *
      * @param profile Объект анкеты
+     * @return Созданная анкета
      */
-    void createProfile(Profile profile);
+    Profile createProfile(Profile profile);
 
     /**
      * Получение анкеты по идентификатору
+     *
      * @param userId Идентификатор пользователя
      * @return Объект анкеты
      */
@@ -18,8 +21,10 @@ public interface ProfileService {
 
     /**
      * Обновление анкеты
+     *
      * @param profile Объект анкеты
+     * @return Обновленная анкета
      */
-    void updateProfile(Profile profile, Long userId);
+    Profile updateProfile(Profile profile, Long userId);
 
 }

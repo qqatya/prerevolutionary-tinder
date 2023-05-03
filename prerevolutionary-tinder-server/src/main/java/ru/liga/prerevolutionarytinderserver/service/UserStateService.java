@@ -7,16 +7,18 @@ public interface UserStateService {
      * Создание состояния пользователя
      *
      * @param state Состояние
+     * @return Созданное состояние
      */
-    void createUserState(State state);
+    State createUserState(State state);
 
     /**
      * Обновление состояния пользователя
      *
      * @param userId Идентификатор пользователя
      * @param state  Состояние
+     * @return Обновленное состояние
      */
-    void updateUserState(Long userId, State state);
+    State updateUserState(Long userId, State state);
 
     /**
      * Получение состояния пользователя
