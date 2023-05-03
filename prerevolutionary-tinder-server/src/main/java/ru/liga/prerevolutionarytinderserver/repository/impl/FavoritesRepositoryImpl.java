@@ -67,7 +67,7 @@ public class FavoritesRepositoryImpl implements FavoritesRepository {
         List<Favorite> favorites = jdbcTemplate.query(SQL_GET_FAVORITES_BY_USER_ID,
                 params, favoriteMapper);
         Integer favoritesCount = jdbcTemplate.query(SQL_GET_FAVORITES_COUNT_BY_USER_ID, params, countMapper)
-                .stream().findFirst().orElseThrow();
+                .stream().findFirst().orElse(null);
 
         log.debug("User's favorites amount = {}", favoritesCount);
         PageImpl<Favorite> favoritePage = new PageImpl<>(favorites, pageable, favoritesCount);

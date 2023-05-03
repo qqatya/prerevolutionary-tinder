@@ -47,7 +47,7 @@ public class SearchRepositoryImpl implements SearchRepository {
         List<Profile> searchResult = jdbcTemplate.query(SQL_GET_PROFILES_OF_ALL_GENDERS,
                 params, profileMapper);
         Integer totalSearchCount = jdbcTemplate.query(SQL_GET_PROFILES_COUNT_OF_ALL_GENDERS, params, countMapper)
-                .stream().findFirst().orElseThrow();
+                .stream().findFirst().orElse(null);
 
         log.debug("Found {} search results", totalSearchCount);
         PageImpl<Profile> searchResultPage = new PageImpl<>(searchResult, pageable, totalSearchCount);
@@ -70,7 +70,7 @@ public class SearchRepositoryImpl implements SearchRepository {
         List<Profile> searchResult = jdbcTemplate.query(SQL_GET_PROFILES_OF_SPECIFIED_GENDER,
                 params, profileMapper);
         Integer totalSearchCount = jdbcTemplate.query(SQL_GET_PROFILES_COUNT_OF_SPECIFIED_GENDER, params, countMapper)
-                .stream().findFirst().orElseThrow();
+                .stream().findFirst().orElse(null);
 
         log.debug("Found {} search results", totalSearchCount);
         PageImpl<Profile> searchResultPage = new PageImpl<>(searchResult, pageable, totalSearchCount);
