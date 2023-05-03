@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.liga.prerevolutionarytinderserver.enums.GenderEnum;
+import ru.liga.prerevolutionarytinderserver.enums.Gender;
 import ru.liga.prerevolutionarytinderserver.model.PageableProfile;
 import ru.liga.prerevolutionarytinderserver.model.Profile;
 import ru.liga.prerevolutionarytinderserver.repository.SearchRepository;
@@ -24,7 +24,7 @@ public class SearchServiceImpl implements SearchService {
         log.info("Searching profiles for userId = {} with search criteria = {}", current.getUserId(),
                 current.getSearch().name());
 
-        if (current.getSearch() == GenderEnum.ALL) {
+        if (current.getSearch() == Gender.ALL) {
             return searchRepository.searchAllGenders(pageable, userId, current.getGender());
         } else {
             return searchRepository.searchSpecifiedGender(pageable, userId, current.getGender(),

@@ -1,7 +1,7 @@
 package ru.liga.prerevolutionarytinderserver.repository;
 
 import org.springframework.data.domain.Pageable;
-import ru.liga.prerevolutionarytinderserver.enums.GenderEnum;
+import ru.liga.prerevolutionarytinderserver.enums.Gender;
 import ru.liga.prerevolutionarytinderserver.model.PageableProfile;
 
 public interface SearchRepository {
@@ -13,7 +13,7 @@ public interface SearchRepository {
      * @param userGender Пол пользователя
      * @return Объект, содержащий всех совпадающие по критерию анкеты и информацию по количеству страниц и анкет
      */
-    PageableProfile searchAllGenders(Pageable pageable, Long userId, GenderEnum userGender);
+    PageableProfile searchAllGenders(Pageable pageable, Long userId, Gender userGender);
 
     /**
      * Постраничный поиск анкет, если критерий поиска = FEMALE/MALE
@@ -24,5 +24,5 @@ public interface SearchRepository {
      * @param preference Поисковой критерий пользователя
      * @return Объект, содержащий всех совпадающие по критерию анкеты и информацию по количеству страниц и анкет
      */
-    PageableProfile searchSpecifiedGender(Pageable pageable, Long userId, GenderEnum userGender, GenderEnum preference);
+    PageableProfile searchSpecifiedGender(Pageable pageable, Long userId, Gender userGender, Gender preference);
 }

@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.liga.prerevolutionarytinderserver.enums.GenderEnum;
+import ru.liga.prerevolutionarytinderserver.enums.Gender;
 import ru.liga.prerevolutionarytinderserver.model.Profile;
 import ru.liga.prerevolutionarytinderserver.service.FavoritesService;
 import ru.liga.prerevolutionarytinderserver.service.LikeService;
@@ -33,8 +33,8 @@ class ProfileControllerTest {
 
     @Test
     void returnStatus201AndCreatesProfile() throws Exception {
-        Profile profile = new Profile(12L, "Иван", GenderEnum.MALE, "", "Описание описание",
-                GenderEnum.ALL);
+        Profile profile = new Profile(12L, "Иван", Gender.MALE, "", "Описание описание",
+                Gender.ALL);
 
         mockMvc.perform(post("/profile")
                         .content(objectMapper.writeValueAsString(profile))

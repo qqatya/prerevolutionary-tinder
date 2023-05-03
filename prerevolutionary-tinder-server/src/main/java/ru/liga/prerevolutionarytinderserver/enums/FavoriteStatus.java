@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public enum FavoriteStatusEnum {
+public enum FavoriteStatus {
     LIKE("Любим вами"),
     LIKED_BY("Вы любимы"),
     MATCH("Взаимность");

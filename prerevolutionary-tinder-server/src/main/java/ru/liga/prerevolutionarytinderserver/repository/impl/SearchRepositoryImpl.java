@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-import ru.liga.prerevolutionarytinderserver.enums.GenderEnum;
+import ru.liga.prerevolutionarytinderserver.enums.Gender;
 import ru.liga.prerevolutionarytinderserver.mapper.CountMapper;
 import ru.liga.prerevolutionarytinderserver.mapper.ProfileMapper;
 import ru.liga.prerevolutionarytinderserver.model.PageableProfile;
@@ -37,7 +37,7 @@ public class SearchRepositoryImpl implements SearchRepository {
 
 
     @Override
-    public PageableProfile searchAllGenders(Pageable pageable, Long userId, GenderEnum userGender) {
+    public PageableProfile searchAllGenders(Pageable pageable, Long userId, Gender userGender) {
         var params = new MapSqlParameterSource();
 
         params.addValue("user_id", userId);
@@ -58,8 +58,8 @@ public class SearchRepositoryImpl implements SearchRepository {
     }
 
     @Override
-    public PageableProfile searchSpecifiedGender(Pageable pageable, Long userId, GenderEnum userGender,
-                                                 GenderEnum preference) {
+    public PageableProfile searchSpecifiedGender(Pageable pageable, Long userId, Gender userGender,
+                                                 Gender preference) {
         var params = new MapSqlParameterSource();
 
         params.addValue("user_id", userId);

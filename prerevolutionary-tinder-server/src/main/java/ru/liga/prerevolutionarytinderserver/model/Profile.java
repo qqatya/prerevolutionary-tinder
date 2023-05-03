@@ -3,7 +3,7 @@ package ru.liga.prerevolutionarytinderserver.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.liga.prerevolutionarytinderserver.enums.GenderEnum;
+import ru.liga.prerevolutionarytinderserver.enums.Gender;
 
 @Data
 @NoArgsConstructor
@@ -11,8 +11,8 @@ import ru.liga.prerevolutionarytinderserver.enums.GenderEnum;
 public class Profile {
     private Long userId;
     private String name;
-    private GenderEnum gender;
+    private Gender gender;
     private String header;
     private String description;
-    private GenderEnum search;
+    private Gender search;
 }

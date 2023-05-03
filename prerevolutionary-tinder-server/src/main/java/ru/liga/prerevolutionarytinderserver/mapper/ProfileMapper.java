@@ -2,7 +2,7 @@ package ru.liga.prerevolutionarytinderserver.mapper;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
-import ru.liga.prerevolutionarytinderserver.enums.GenderEnum;
+import ru.liga.prerevolutionarytinderserver.enums.Gender;
 import ru.liga.prerevolutionarytinderserver.model.Profile;
 
 import java.sql.ResultSet;
@@ -18,9 +18,9 @@ public class ProfileMapper implements RowMapper<Profile> {
         return new Profile(
                 rs.getLong("user_id"),
                 rs.getString("name"),
-                GenderEnum.valueOf(rs.getString("gender")),
+                Gender.valueOf(rs.getString("gender")),
                 rs.getString("header"),
                 rs.getString("description"),
-                GenderEnum.valueOf(rs.getString("search")));
+                Gender.valueOf(rs.getString("search")));
     }
 }

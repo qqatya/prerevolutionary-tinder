@@ -1,6 +1,6 @@
 package ru.liga.prerevolutionarytinderserver.enums;
 
-public enum GenderEnum {
+public enum Gender {
     FEMALE,
     MALE,
     ALL
