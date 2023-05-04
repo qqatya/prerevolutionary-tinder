@@ -11,6 +11,7 @@
         <module>prerevolutionary-tinder-server</module>
         <module>prerevolutionary-tinder-image-creator</module>
         <module>prerevolutionary-tinder-translator</module>
+        <module>prerevolutionary-tinder-common</module>
     </modules>
 
     <properties>
@@ -25,7 +26,6 @@
         <telegram.version>6.5.0</telegram.version>
         <logback.version>1.4.6</logback.version>
         <slf4j-api.version>2.0.6</slf4j-api.version>
-
     </properties>
 
     <dependencies>

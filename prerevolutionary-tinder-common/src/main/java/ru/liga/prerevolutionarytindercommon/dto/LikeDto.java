@@ -1,4 +1,4 @@
-package ru.liga.prerevolutionarytinderserver.model;
+package ru.liga.prerevolutionarytindercommon.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Like {
+public class LikeDto {
     private Long likedUserId;
 }

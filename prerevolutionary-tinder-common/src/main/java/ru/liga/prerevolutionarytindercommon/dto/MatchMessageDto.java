@@ -1,4 +1,4 @@
-package ru.liga.prerevolutionarytinderserver.model;
+package ru.liga.prerevolutionarytindercommon.dto;
 
 import lombok.*;
 
@@ -6,7 +6,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @RequiredArgsConstructor
-public class MatchMessage {
+public class MatchMessageDto {
     @NonNull
     private Boolean isMatch;
     private String message;

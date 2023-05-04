@@ -8,11 +8,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import ru.liga.prerevolutionarytindercommon.dto.LikeDto;
+import ru.liga.prerevolutionarytindercommon.dto.MatchMessageDto;
+import ru.liga.prerevolutionarytindercommon.dto.favorite.PageableFavoriteDto;
+import ru.liga.prerevolutionarytindercommon.dto.profile.PageableProfileDto;
+import ru.liga.prerevolutionarytindercommon.dto.profile.ProfileDto;
 import ru.liga.prerevolutionarytinderserver.dto.ProfileDescription;
-import ru.liga.prerevolutionarytinderserver.dto.ProfileDto;
 import ru.liga.prerevolutionarytinderserver.dto.Text;
 import ru.liga.prerevolutionarytinderserver.exception.ConnectionException;
-import ru.liga.prerevolutionarytinderserver.model.*;
+import ru.liga.prerevolutionarytinderserver.model.Like;
+import ru.liga.prerevolutionarytinderserver.model.MatchMessage;
+import ru.liga.prerevolutionarytinderserver.model.Profile;
 import ru.liga.prerevolutionarytinderserver.service.FavoritesService;
 import ru.liga.prerevolutionarytinderserver.service.LikeService;
 import ru.liga.prerevolutionarytinderserver.service.ProfileService;
@@ -59,7 +65,16 @@ public class ProfileController {
         profile.setUserId(profileDto.getUserId());
         profile.setGender(profileDto.getGender());
         profile.setSearch(profileDto.getSearch());
-        return new ProfileDto(profileService.createProfile(profile));
+        Profile createdProfile = profileService.createProfile(profile);
+
+        return ProfileDto.builder()
+                .userId(createdProfile.getUserId())
+                .name(createdProfile.getName())
+                .gender(createdProfile.getGender())
+                .header(createdProfile.getHeader())
+                .description(createdProfile.getDescription())
+                .search(createdProfile.getSearch())
+                .build();
     }
 
     /**
@@ -70,7 +85,16 @@ public class ProfileController {
      */
     @GetMapping(value = "/{userId}")
     public ProfileDto getProfile(@PathVariable("userId") Long userId) {
-        return new ProfileDto(profileService.getProfile(userId));
+        Profile profile = profileService.getProfile(userId);
+
+        return ProfileDto.builder()
+                .userId(profile.getUserId())
+                .name(profile.getName())
+                .gender(profile.getGender())
+                .header(profile.getHeader())
+                .description(profile.getDescription())
+                .search(profile.getSearch())
+                .build();
     }
 
     /**
@@ -96,7 +120,16 @@ public class ProfileController {
         profile.setUserId(profileDto.getUserId());
         profile.setGender(profileDto.getGender());
         profile.setSearch(profileDto.getSearch());
-        return new ProfileDto(profileService.updateProfile(profile, userId));
+        Profile updatedProfile = profileService.updateProfile(profile, userId);
+
+        return ProfileDto.builder()
+                .userId(updatedProfile.getUserId())
+                .name(updatedProfile.getName())
+                .gender(updatedProfile.getGender())
+                .header(updatedProfile.getHeader())
+                .description(updatedProfile.getDescription())
+                .search(updatedProfile.getSearch())
+                .build();
     }
 
     /**
@@ -128,9 +161,9 @@ public class ProfileController {
      * @return Страница с любимцами пользователя
      */
     @GetMapping(value = "/{userId}/favorites")
-    public PageableFavorite getFavorites(@PathVariable("userId") Long userId,
-                                         @RequestParam("page") int page,
-                                         @RequestParam("size") int size) {
+    public PageableFavoriteDto getFavorites(@PathVariable("userId") Long userId,
+                                            @RequestParam("page") int page,
+                                            @RequestParam("size") int size) {
         PageRequest pageable = PageRequest.of(page, size);
         return favoritesService.findFavorites(pageable, userId);
     }
@@ -144,9 +177,9 @@ public class ProfileController {
      * @return Страница с результатом поиска
      */
     @GetMapping(value = "/{userId}/search")
-    public PageableProfile searchProfiles(@PathVariable("userId") Long userId,
-                                          @RequestParam("page") int page,
-                                          @RequestParam("size") int size) {
+    public PageableProfileDto searchProfiles(@PathVariable("userId") Long userId,
+                                             @RequestParam("page") int page,
+                                             @RequestParam("size") int size) {
         PageRequest pageable = PageRequest.of(page, size);
         return searchService.searchProfiles(pageable, userId);
     }
@@ -154,15 +187,17 @@ public class ProfileController {
     /**
      * Добавление лайка пользователя
      *
-     * @param userId Идентификатор пользователя
-     * @param like   Объект, содержащий идентификатор пользователя, которому поставили лайк
+     * @param userId  Идентификатор пользователя
+     * @param likeDto Объект, содержащий идентификатор пользователя, которому поставили лайк
      * @return Объект, содержащий сообщение о наличии мэтча
      */
     //FIXME: переделать /like в эндпоинте на /favorite; класс Like переименовать в Favorite, а текущий Favorite
     // отнаследовать от Profile и переименовать на FavoriteProfile
     @PostMapping(value = "/{userId}/like")
-    public MatchMessage putLike(@PathVariable("userId") Long userId, @RequestBody Like like) {
-        return likeService.putLike(userId, like);
+    public MatchMessageDto putLike(@PathVariable("userId") Long userId, @RequestBody LikeDto likeDto) {
+        MatchMessage matchMessage = likeService.putLike(userId, new Like(likeDto.getLikedUserId()));
+
+        return new MatchMessageDto(matchMessage.getIsMatch(), matchMessage.getMessage());
     }
 
 }

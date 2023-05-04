@@ -1,7 +1,7 @@
 package ru.liga.prerevolutionarytinderserver.service;
 
 import org.springframework.data.domain.Pageable;
-import ru.liga.prerevolutionarytinderserver.model.PageableProfile;
+import ru.liga.prerevolutionarytindercommon.dto.profile.PageableProfileDto;
 
 public interface SearchService {
     /**
@@ -11,5 +11,5 @@ public interface SearchService {
      * @param userId   Идентификатор пользователя
      * @return Объект, содержащий всех совпадающие по критерию анкеты и информацию по количеству страниц и анкет
      */
-    PageableProfile searchProfiles(Pageable pageable, Long userId);
+    PageableProfileDto searchProfiles(Pageable pageable, Long userId);
 }

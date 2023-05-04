@@ -16,6 +16,7 @@
         <postgres.version>42.6.0</postgres.version>
         <liquibase.version>4.20.0</liquibase.version>
         <maven-assembly.version>2.4.1</maven-assembly.version>
+        <prerevolutionary-tinder-common.version>0.0.1-SNAPSHOT</prerevolutionary-tinder-common.version>
     </properties>
 
     <dependencies>
@@ -44,6 +45,11 @@
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-commons</artifactId>
             <version>${spring-boot.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.liga</groupId>
+            <artifactId>prerevolutionary-tinder-common</artifactId>
+            <version>${prerevolutionary-tinder-common.version}</version>
         </dependency>
     </dependencies>
 

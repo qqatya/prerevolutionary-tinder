@@ -1,7 +1,7 @@
 package ru.liga.prerevolutionarytinderserver.repository;
 
 import org.springframework.data.domain.Pageable;
-import ru.liga.prerevolutionarytinderserver.model.PageableFavorite;
+import ru.liga.prerevolutionarytindercommon.dto.favorite.PageableFavoriteDto;
 
 public interface FavoritesRepository {
     /**
@@ -11,6 +11,6 @@ public interface FavoritesRepository {
      * @param userId   Идентификатор пользователя
      * @return Объект, содержащий всех любимцев и информацию по количеству страниц и любимцев
      */
-    PageableFavorite findFavoritesByUserId(Pageable pageable, Long userId);
+    PageableFavoriteDto findFavoritesByUserId(Pageable pageable, Long userId);
 
 }

@@ -1,6 +1,7 @@
-package ru.liga.prerevolutionarytinderserver.model;
+package ru.liga.prerevolutionarytindercommon.dto.profile;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.liga.prerevolutionarytindercommon.enums.Gender;
@@ -8,7 +9,8 @@ import ru.liga.prerevolutionarytindercommon.enums.Gender;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Profile {
+@Builder
+public class ProfileDto {
     private Long userId;
     private String name;
     private Gender gender;

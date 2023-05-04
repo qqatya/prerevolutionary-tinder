@@ -7,10 +7,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import ru.liga.prerevolutionarytindercommon.dto.favorite.FavoriteDto;
+import ru.liga.prerevolutionarytindercommon.dto.favorite.PageableFavoriteDto;
 import ru.liga.prerevolutionarytinderserver.mapper.CountMapper;
-import ru.liga.prerevolutionarytinderserver.mapper.FavoriteMapper;
-import ru.liga.prerevolutionarytinderserver.model.Favorite;
-import ru.liga.prerevolutionarytinderserver.model.PageableFavorite;
+import ru.liga.prerevolutionarytinderserver.mapper.FavoriteDtoMapper;
 import ru.liga.prerevolutionarytinderserver.repository.FavoritesRepository;
 
 import java.util.List;
@@ -54,26 +54,26 @@ public class FavoritesRepositoryImpl implements FavoritesRepository {
             + "inner join search s on s.search_result = p.user_id ";
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
-    private final FavoriteMapper favoriteMapper;
+    private final FavoriteDtoMapper favoriteDtoMapper;
     private final CountMapper countMapper;
 
     @Override
-    public PageableFavorite findFavoritesByUserId(Pageable pageable, Long userId) {
+    public PageableFavoriteDto findFavoritesByUserId(Pageable pageable, Long userId) {
         var params = new MapSqlParameterSource();
 
         params.addValue("user_id", userId);
         params.addValue("limit", pageable.getPageSize());
         params.addValue("offset", pageable.getOffset());
-        List<Favorite> favorites = jdbcTemplate.query(SQL_GET_FAVORITES_BY_USER_ID,
-                params, favoriteMapper);
+        List<FavoriteDto> favorites = jdbcTemplate.query(SQL_GET_FAVORITES_BY_USER_ID,
+                params, favoriteDtoMapper);
         Integer favoritesCount = jdbcTemplate.query(SQL_GET_FAVORITES_COUNT_BY_USER_ID, params, countMapper)
                 .stream().findFirst().orElse(null);
 
         log.debug("User's favorites amount = {}", favoritesCount);
-        PageImpl<Favorite> favoritePage = new PageImpl<>(favorites, pageable, favoritesCount);
+        PageImpl<FavoriteDto> favoritePage = new PageImpl<>(favorites, pageable, favoritesCount);
 
         log.info("Finished favorites search by userId: {}", userId);
-        return new PageableFavorite(favoritePage.getContent(), favoritePage.getTotalPages(),
+        return new PageableFavoriteDto(favoritePage.getContent(), favoritePage.getTotalPages(),
                 favoritePage.getTotalElements());
     }
 }

@@ -2,20 +2,20 @@ package ru.liga.prerevolutionarytinderserver.mapper;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
+import ru.liga.prerevolutionarytindercommon.dto.profile.ProfileDto;
 import ru.liga.prerevolutionarytindercommon.enums.Gender;
-import ru.liga.prerevolutionarytinderserver.model.Profile;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Маппер объекта анкеты к таблице profile
+ * Маппер DTO анкеты
  */
 @Component
-public class ProfileMapper implements RowMapper<Profile> {
+public class ProfileDtoMapper implements RowMapper<ProfileDto> {
     @Override
-    public Profile mapRow(ResultSet rs, int rowNum) throws SQLException {
-        return new Profile(
+    public ProfileDto mapRow(ResultSet rs, int rowNum) throws SQLException {
+        return new ProfileDto(
                 rs.getLong("user_id"),
                 rs.getString("name"),
                 Gender.valueOf(rs.getString("gender")),

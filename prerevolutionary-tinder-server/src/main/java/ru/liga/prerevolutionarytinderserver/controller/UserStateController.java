@@ -2,6 +2,7 @@ package ru.liga.prerevolutionarytinderserver.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.liga.prerevolutionarytindercommon.dto.StateDto;
 import ru.liga.prerevolutionarytinderserver.model.State;
 import ru.liga.prerevolutionarytinderserver.service.UserStateService;
 
@@ -14,11 +15,13 @@ public class UserStateController {
     /**
      * Создание состояния пользователя
      *
-     * @param state Состояние
+     * @param stateDto Состояние
      */
     @PostMapping
-    public State createUserState(@RequestBody State state) {
-        return userStateService.createUserState(state);
+    public StateDto createUserState(@RequestBody StateDto stateDto) {
+        State createdState = userStateService.createUserState(new State(stateDto.getUserId(), stateDto.getState()));
+
+        return new StateDto(createdState.getUserId(), createdState.getState());
     }
 
     /**
@@ -27,8 +30,11 @@ public class UserStateController {
      * @param userId Идентификатор пользователя
      */
     @PutMapping(value = "/{userId}")
-    public State updateUserState(@PathVariable("userId") Long userId, @RequestBody State state) {
-        return userStateService.updateUserState(userId, state);
+    public StateDto updateUserState(@PathVariable("userId") Long userId, @RequestBody StateDto stateDto) {
+        State updatedState = userStateService.updateUserState(userId,
+                new State(stateDto.getUserId(), stateDto.getState()));
+
+        return new StateDto(updatedState.getUserId(), updatedState.getState());
     }
 
     /**
@@ -38,7 +44,9 @@ public class UserStateController {
      * @return Состояние
      */
     @GetMapping(value = "/{userId}")
-    public State getUserState(@PathVariable("userId") Long userId) {
-        return userStateService.getUserState(userId);
+    public StateDto getUserState(@PathVariable("userId") Long userId) {
+        State state = userStateService.getUserState(userId);
+
+        return new StateDto(state.getUserId(), state.getState());
     }
 }

@@ -1,4 +1,4 @@
-package ru.liga.prerevolutionarytinderserver.enums;
+package ru.liga.prerevolutionarytindercommon.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
