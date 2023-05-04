@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import ru.liga.prerevolutionarytinderserver.dto.ProfileDescription;
+import ru.liga.prerevolutionarytinderserver.dto.ProfileDto;
 import ru.liga.prerevolutionarytinderserver.dto.Text;
 import ru.liga.prerevolutionarytinderserver.exception.ConnectionException;
 import ru.liga.prerevolutionarytinderserver.model.*;
@@ -39,13 +40,14 @@ public class ProfileController {
     /**
      * Создание анкеты
      *
-     * @param profile Объект анкеты
+     * @param profileDto Анкета
      * @return Созданная анкета
      */
     @PostMapping
-    public Profile createProfile(@RequestBody Profile profile) {
-        Text name = new Text(profile.getName());
-        Text description = new Text(profile.getDescription());
+    public ProfileDto createProfile(@RequestBody ProfileDto profileDto) {
+        Profile profile = new Profile();
+        Text name = new Text(profileDto.getName());
+        Text description = new Text(profileDto.getDescription());
         try {
             URI uri = new URI(translatorUrl);
             profile.setName(restTemplate.postForObject(uri, name, Text.class).getText());
@@ -54,30 +56,34 @@ public class ProfileController {
         } catch (URISyntaxException e) {
             throw new ConnectionException();
         }
-        return profileService.createProfile(profile);
+        profile.setUserId(profileDto.getUserId());
+        profile.setGender(profileDto.getGender());
+        profile.setSearch(profileDto.getSearch());
+        return new ProfileDto(profileService.createProfile(profile));
     }
 
     /**
      * Получение анкеты по идентификатору
      *
      * @param userId Идентификатор пользователя
-     * @return Объект анкеты
+     * @return Анкета
      */
     @GetMapping(value = "/{userId}")
-    public Profile getProfile(@PathVariable("userId") Long userId) {
-        return profileService.getProfile(userId);
+    public ProfileDto getProfile(@PathVariable("userId") Long userId) {
+        return new ProfileDto(profileService.getProfile(userId));
     }
 
     /**
      * Обновление анкеты
      *
-     * @param profile Объект анкеты
+     * @param profileDto Анкета
      * @return Обновленная анкета
      */
     @PutMapping(value = "/{userId}")
-    public Profile updateProfile(@PathVariable("userId") Long userId, @RequestBody Profile profile) {
-        Text name = new Text(profile.getName());
-        Text description = new Text(profile.getDescription());
+    public ProfileDto updateProfile(@PathVariable("userId") Long userId, @RequestBody ProfileDto profileDto) {
+        Profile profile = new Profile();
+        Text name = new Text(profileDto.getName());
+        Text description = new Text(profileDto.getDescription());
 
         try {
             URI uri = new URI(translatorUrl);
@@ -87,7 +93,10 @@ public class ProfileController {
         } catch (URISyntaxException e) {
             throw new ConnectionException();
         }
-        return profileService.updateProfile(profile, userId);
+        profile.setUserId(profileDto.getUserId());
+        profile.setGender(profileDto.getGender());
+        profile.setSearch(profileDto.getSearch());
+        return new ProfileDto(profileService.updateProfile(profile, userId));
     }
 
     /**
