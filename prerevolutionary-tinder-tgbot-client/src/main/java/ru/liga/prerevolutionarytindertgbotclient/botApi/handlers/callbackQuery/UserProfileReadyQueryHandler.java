@@ -38,12 +38,12 @@ public class UserProfileReadyQueryHandler implements CallbackQueryHandler {
         if (data.equals(Gender.FEMALE.getName())) {
             userProfile.setSearch(Gender.FEMALE);
         }
-        System.out.println(data);
         if (data.equals("Всех")) {
             userProfile.setSearch(Gender.ALL);
         }
         userProfile.setUserId(userId);
         userProfileRestService.postUserProfile(userDataCacheStore.getUserProfile(userId));
+        userDataCacheStore.deleteUserProfile(userId);
         byte[] image = userProfileRestService.getUserImage(userId);
         userStateRestService.updateUserState(String.valueOf(userId), BotState.SHOW_MAIN_MENU);
         return List.of(replyMessagesService.getPhotoMessage(callbackQuery.getMessage().getChatId(), image, BotState.SHOW_MAIN_MENU));

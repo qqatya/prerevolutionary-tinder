@@ -82,12 +82,7 @@ public class FavoritesMenuButtonsHandler implements StageHandler {
     }
 
     private String createReplyMessage(String gender, String status, String name) {
-        System.out.println(gender);
-        System.out.println(status);
-        System.out.println(name);
         StringBuilder stringBuilder = new StringBuilder();
-        System.out.println(gender.equals("MALE"));
-        System.out.println(gender.equals("FEMALE"));
         if (gender.equals("MALE")) {
             stringBuilder.append("Сударь, ");
         }

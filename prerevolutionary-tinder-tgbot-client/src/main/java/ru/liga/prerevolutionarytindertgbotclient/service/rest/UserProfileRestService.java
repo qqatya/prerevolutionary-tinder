@@ -4,10 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.*;
-import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
@@ -15,17 +15,20 @@ import ru.liga.prerevolutionarytindertgbotclient.model.UserProfile;
 
 @Service
 @Slf4j
+@PropertySource("classpath:application.properties")
 public class UserProfileRestService {
-    private final Environment env;
+    @Autowired
     private final RestTemplate restTemplate;
+    @Value("${server-url}")
+    private String SERVER_URL;
+    private final String PROFILES_PATH = "/profiles";
 
-    public UserProfileRestService(Environment env, RestTemplateBuilder restTemplateBuilder) {
-        this.env = env;
-        this.restTemplate = restTemplateBuilder.additionalMessageConverters(new ByteArrayHttpMessageConverter()).build();
+    public UserProfileRestService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
     }
 
     public UserProfile getUserById(long userId) {
-        String url = env.getProperty("server-url") + "/profile/" + userId;
+        String url = SERVER_URL + PROFILES_PATH + "/" + userId;
         ResponseEntity<UserProfile> response = this.restTemplate.getForEntity(url, UserProfile.class);
         if (response.getStatusCode() == HttpStatus.OK) {
             return response.getBody();
@@ -38,12 +41,12 @@ public class UserProfileRestService {
     }
 
     public byte[] getUserImage(long userId) {
-        String url = env.getProperty("server-url") + "/profile/" + userId + "/image";
+        String url = SERVER_URL + PROFILES_PATH + "/" + userId + "/images";
         return this.restTemplate.getForObject(url, byte[].class);
     }
 
     public void postUserProfile(UserProfile userProfile) {
-        String url = env.getProperty("server-url") + "/profile";
+        String url = SERVER_URL + PROFILES_PATH;
         HttpEntity<UserProfile> entity = new HttpEntity<>(userProfile);
         try {
             this.restTemplate.postForEntity(url, entity, UserProfile.class);
@@ -58,7 +61,7 @@ public class UserProfileRestService {
     }
 
     private void updateUserProfile(UserProfile userProfile) {
-        String url = env.getProperty("server-url") + "/profile/update/" + userProfile.getUserId();
+        String url = SERVER_URL + PROFILES_PATH + "/" + userProfile.getUserId();
         HttpEntity<UserProfile> entity = new HttpEntity<>(userProfile);
         try {
             this.restTemplate.exchange(url, HttpMethod.PUT, entity, UserProfile.class);
@@ -68,7 +71,7 @@ public class UserProfileRestService {
     }
 
     public JsonNode searchProfiles(String userId, int page, int size) {
-        String url = env.getProperty("server-url") + "/profile/" + userId +
+        String url = SERVER_URL + PROFILES_PATH + "/" + userId +
                 "/actions/search?page=" + page + "&size=" + size;
         try {
             ResponseEntity<String> response = this.restTemplate.getForEntity(url, String.class);
@@ -79,7 +82,7 @@ public class UserProfileRestService {
     }
 
     public JsonNode searchFavorites(String userId, int page, int size) {
-        String url = env.getProperty("server-url") + "/profile/" + userId +
+        String url = SERVER_URL + PROFILES_PATH + "/" + userId +
                 "/favorites?page=" + page + "&size=" + size;
 
         try {
@@ -91,7 +94,7 @@ public class UserProfileRestService {
     }
 
     public JsonNode postLike(String userId, String likedUserId) {
-        String url = env.getProperty("server-url") + "/profile/" + userId +
+        String url = SERVER_URL + PROFILES_PATH + "/" + userId +
                 "/actions/like";
         ObjectMapper jsonMapper = new ObjectMapper();
         HttpHeaders headers = new HttpHeaders();

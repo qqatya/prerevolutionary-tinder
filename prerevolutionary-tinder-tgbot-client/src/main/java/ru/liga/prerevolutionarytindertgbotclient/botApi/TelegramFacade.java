@@ -38,7 +38,6 @@ public class TelegramFacade {
         }
         Message message = update.getMessage();
         if (message != null && message.hasText()) {
-            System.out.println("Попадаю сюда");
             log.info("New message from User:{}, userId: {}, chatId: {},  with text: {}",
                     message.getFrom().getUserName(), message.getFrom().getId(), message.getChatId(), message.getText());
             replyMessage = handleInputMessage(message);

@@ -21,6 +21,9 @@ public class UserDataCacheStore implements DataCacheStore {
         }
         return profile;
     }
+    public void deleteUserProfile(long userId) {
+        usersProfile.remove(userId);
+    }
 
     @Override
     public void saveUserProfile(long userId, UserProfile profile) {
