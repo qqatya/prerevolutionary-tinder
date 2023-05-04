@@ -143,7 +143,7 @@ public class ProfileController {
      * @param size   Количество записей на странице
      * @return Страница с результатом поиска
      */
-    @GetMapping(value = "/{userId}/actions/search")
+    @GetMapping(value = "/{userId}/search")
     public PageableProfile searchProfiles(@PathVariable("userId") Long userId,
                                           @RequestParam("page") int page,
                                           @RequestParam("size") int size) {
@@ -158,7 +158,9 @@ public class ProfileController {
      * @param like   Объект, содержащий идентификатор пользователя, которому поставили лайк
      * @return Объект, содержащий сообщение о наличии мэтча
      */
-    @PostMapping(value = "/{userId}/actions/like")
+    //FIXME: переделать /like в эндпоинте на /favorite; класс Like переименовать в Favorite, а текущий Favorite
+    // отнаследовать от Profile и переименовать на FavoriteProfile
+    @PostMapping(value = "/{userId}/like")
     public MatchMessage putLike(@PathVariable("userId") Long userId, @RequestBody Like like) {
         return likeService.putLike(userId, like);
     }
