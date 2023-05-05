@@ -3,8 +3,8 @@ package ru.liga.prerevolutionarytindertgbotclient.botApi.handlers.callbackQuery;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import ru.liga.prerevolutionarytindercommon.enums.Gender;
 import ru.liga.prerevolutionarytindertgbotclient.model.BotState;
-import ru.liga.prerevolutionarytindertgbotclient.model.Gender;
 import ru.liga.prerevolutionarytindertgbotclient.model.UserProfile;
 import ru.liga.prerevolutionarytindertgbotclient.repository.UserDataCacheStore;
 import ru.liga.prerevolutionarytindertgbotclient.service.ReplyMessagesService;
@@ -38,12 +38,12 @@ public class UserProfileReadyQueryHandler implements CallbackQueryHandler {
         if (data.equals(Gender.FEMALE.getName())) {
             userProfile.setSearch(Gender.FEMALE);
         }
-        if (data.equals("Всех")) {
+        if (data.equals(Gender.ALL.getName())) {
             userProfile.setSearch(Gender.ALL);
         }
         userProfile.setUserId(userId);
         userProfileRestService.postUserProfile(userDataCacheStore.getUserProfile(userId));
-        userDataCacheStore.deleteUserProfile(userId);
+        userDataCacheStore.deleteUserProfile(userId); // Удаляем из кеша профиль пользователя, так как он уже записан в БД.
         byte[] image = userProfileRestService.getUserImage(userId);
         userStateRestService.updateUserState(String.valueOf(userId), BotState.SHOW_MAIN_MENU);
         return List.of(replyMessagesService.getPhotoMessage(callbackQuery.getMessage().getChatId(), image, BotState.SHOW_MAIN_MENU));

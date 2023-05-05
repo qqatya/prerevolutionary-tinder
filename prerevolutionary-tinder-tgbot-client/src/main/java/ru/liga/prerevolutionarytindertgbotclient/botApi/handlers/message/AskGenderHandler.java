@@ -6,8 +6,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import ru.liga.prerevolutionarytindercommon.enums.Gender;
 import ru.liga.prerevolutionarytindertgbotclient.model.BotState;
-import ru.liga.prerevolutionarytindertgbotclient.model.Gender;
 import ru.liga.prerevolutionarytindertgbotclient.service.ReplyMessagesService;
 import ru.liga.prerevolutionarytindertgbotclient.service.rest.UserStateRestService;
 

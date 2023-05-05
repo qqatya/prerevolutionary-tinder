@@ -1,11 +1,13 @@
 package ru.liga.prerevolutionarytindertgbotclient.botApi.handlers.stage;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.interfaces.BotApiObject;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import ru.liga.prerevolutionarytindercommon.dto.MatchMessageDto;
+import ru.liga.prerevolutionarytindercommon.dto.profile.PageableProfileDto;
+import ru.liga.prerevolutionarytindercommon.dto.profile.ProfileDto;
 import ru.liga.prerevolutionarytindertgbotclient.model.BotStage;
 import ru.liga.prerevolutionarytindertgbotclient.model.BotState;
 import ru.liga.prerevolutionarytindertgbotclient.service.ReplyMessagesService;
@@ -20,7 +22,7 @@ import java.util.List;
 public class SearchMenuButtonsHandler implements StageHandler {
     private final int PAGE_SIZE = 1;
     private int pageCount = 0;
-    private int totalElements = 0;
+    private long totalElements = 0;
     private final UserStateRestService userStateRestService;
     private final ReplyMessagesService replyMessagesService;
     private final UserProfileRestService userProfileRestService;
@@ -53,10 +55,10 @@ public class SearchMenuButtonsHandler implements StageHandler {
 
     private List<PartialBotApiMethod<?>> handleSwipe(Message message, boolean isLiked) {
         long userId = message.getFrom().getId();
-        JsonNode userData = userProfileRestService.searchProfiles(String.valueOf(userId), pageCount, PAGE_SIZE);
-        JsonNode content = userData.get("content");
-        totalElements = userData.get("totalElements").asInt();
-        byte[] userProfileImage = userProfileRestService.getUserImage(content.get(0).get("userId").asLong());
+        PageableProfileDto userData = userProfileRestService.searchProfiles(String.valueOf(userId), pageCount, PAGE_SIZE);
+        ProfileDto content = userData.getContent().get(0);
+        totalElements = userData.getTotalElements();
+        byte[] userProfileImage = userProfileRestService.getUserImage(content.getUserId());
         pageCount++;
         if (totalElements <= pageCount) {
             pageCount = 0;
@@ -64,9 +66,9 @@ public class SearchMenuButtonsHandler implements StageHandler {
         List<PartialBotApiMethod<?>> replies = new ArrayList<>();
         replies.add(replyMessagesService.getPhotoMessage(message.getChatId(), userProfileImage, BotState.SHOW_SEARCH));
         if (isLiked) {
-            JsonNode likeData = userProfileRestService.postLike(String.valueOf(userId), content.get(0).get("userId").toString());
-            if (likeData.get("isMatch").asBoolean()) {
-                replies.add(replyMessagesService.getReplyMessage(message.getChatId(), likeData.get("message").toString().replace("\"", ""), BotState.SHOW_SEARCH));
+            MatchMessageDto likeData = userProfileRestService.postLike(String.valueOf(userId), content.getUserId().toString());
+            if (likeData.getIsMatch()) {
+                replies.add(replyMessagesService.getReplyMessage(message.getChatId(), likeData.getMessage(), BotState.SHOW_SEARCH));
             }
         }
         return replies;

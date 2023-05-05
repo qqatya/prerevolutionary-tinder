@@ -51,7 +51,7 @@ public class UserStateRestService {
     public void postUserState(String userId, BotState botState) {
         String url = SERVER_URL + STATES_PATH;
         System.out.println(url);
-        HttpEntity<State> entity = new HttpEntity<>(new State(userId, botState.toString()));
+        HttpEntity<State> entity = new HttpEntity<>(new State(userId, botState.name()));
         ResponseEntity<Object> response = this.restTemplate.postForEntity(url, entity, Object.class);
         if (response.getStatusCode() != HttpStatus.OK) {
             throw new RuntimeException("Что то пошло не так c добавлением стейта");
@@ -60,7 +60,7 @@ public class UserStateRestService {
 
     public void updateUserState(String userId, BotState botState) {
         String url = SERVER_URL + STATES_PATH + "/" + userId;
-        HttpEntity<State> entity = new HttpEntity<>(new State(userId, botState.toString()));
+        HttpEntity<State> entity = new HttpEntity<>(new State(userId, botState.name()));
         ResponseEntity<State> response = this.restTemplate.exchange(url, HttpMethod.PUT, entity, State.class);
         if (response.getStatusCode() != HttpStatus.OK) {
             throw new RuntimeException("Что то пошло не так c обновлением стейта");

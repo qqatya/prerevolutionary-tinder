@@ -1,10 +1,12 @@
 package ru.liga.prerevolutionarytindertgbotclient.botApi.handlers.stage;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.interfaces.BotApiObject;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import ru.liga.prerevolutionarytindercommon.dto.favorite.FavoriteDto;
+import ru.liga.prerevolutionarytindercommon.dto.favorite.PageableFavoriteDto;
+import ru.liga.prerevolutionarytindercommon.dto.profile.ProfileDto;
 import ru.liga.prerevolutionarytindertgbotclient.model.BotStage;
 import ru.liga.prerevolutionarytindertgbotclient.model.BotState;
 import ru.liga.prerevolutionarytindertgbotclient.service.ReplyMessagesService;
@@ -18,7 +20,7 @@ import java.util.List;
 public class FavoritesMenuButtonsHandler implements StageHandler {
     private final int PAGE_SIZE = 1;
     private int pageCount = 0;
-    private int totalElements = 0;
+    private long totalElements = 0;
     private final UserStateRestService userStateRestService;
     private final ReplyMessagesService replyMessagesService;
     private final UserProfileRestService userProfileRestService;
@@ -51,18 +53,18 @@ public class FavoritesMenuButtonsHandler implements StageHandler {
 
     private List<PartialBotApiMethod<?>> handleSwipe(Message message, int indexTo) {
         long userId = message.getFrom().getId();
-        JsonNode userData = userProfileRestService.searchFavorites(String.valueOf(userId), pageCount, PAGE_SIZE);
-        JsonNode content = userData.get("content");
-        JsonNode profile = content.get(0).get("profile");
-        totalElements = userData.get("totalElements").asInt();
-        byte[] userProfileImage = userProfileRestService.getUserImage(profile.get("userId").asLong());
+        PageableFavoriteDto userData = userProfileRestService.searchFavorites(String.valueOf(userId), pageCount, PAGE_SIZE);
+        FavoriteDto content = userData.getContent().get(0);
+        ProfileDto profile = content.getProfile();
+        totalElements = userData.getTotalElements();
+        byte[] userProfileImage = userProfileRestService.getUserImage(profile.getUserId());
         pageCount += indexTo;
         if (totalElements <= pageCount || pageCount <= 0) {
             pageCount = 0;
         }
-        String replyMessage = createReplyMessage(profile.get("gender").toString().replace("\"", ""),
-                content.get(0).get("status").toString().replace("\"", ""),
-                profile.get("name").toString().replace("\"", ""));
+        String replyMessage = createReplyMessage(profile.getGender().getName(),
+                content.getStatus().getStatusName(),
+                profile.getName());
         List<PartialBotApiMethod<?>> replies = new ArrayList<>();
         replies.add(replyMessagesService.getPhotoMessage(message.getChatId(), userProfileImage, BotState.SHOW_SEARCH));
         replies.add(replyMessagesService.getReplyMessage(message.getChatId(), replyMessage, BotState.SHOW_SEARCH));
@@ -81,24 +83,9 @@ public class FavoritesMenuButtonsHandler implements StageHandler {
         throw new RuntimeException("Данный обработчик не отвечает за обьект " + apiObject + " : " + this);
     }
 
-    private String createReplyMessage(String gender, String status, String name) {
-        StringBuilder stringBuilder = new StringBuilder();
-        if (gender.equals("MALE")) {
-            stringBuilder.append("Сударь, ");
-        }
-        if (gender.equals("FEMALE")) {
-            stringBuilder.append("Сударыня, ");
-        }
-        stringBuilder.append(name).append(", ");
-        if (status.equals("LIKED_BY")) {
-            stringBuilder.append("Вы любимы.");
-        }
-        if (status.equals("MATCH")) {
-            stringBuilder.append("Взаимность.");
-        }
-        if (status.equals("LIKE")) {
-            stringBuilder.append("Любим(а) вами.");
-        }
-        return stringBuilder.toString().replace("\"", "");
+    private String createReplyMessage(String genderName, String statusName, String userName) {
+        return genderName + ", " +
+                userName + ", " +
+                statusName + ".";
     }
 }

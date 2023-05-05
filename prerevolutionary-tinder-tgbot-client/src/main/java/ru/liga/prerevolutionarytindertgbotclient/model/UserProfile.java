@@ -3,6 +3,7 @@ package ru.liga.prerevolutionarytindertgbotclient.model;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import ru.liga.prerevolutionarytindercommon.enums.Gender;
 
 import java.io.Serializable;
 

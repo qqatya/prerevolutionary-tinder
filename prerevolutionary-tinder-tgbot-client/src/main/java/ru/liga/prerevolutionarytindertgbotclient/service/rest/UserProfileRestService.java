@@ -1,7 +1,5 @@
 package ru.liga.prerevolutionarytindertgbotclient.service.rest;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +9,10 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
+import ru.liga.prerevolutionarytindercommon.dto.LikeDto;
+import ru.liga.prerevolutionarytindercommon.dto.MatchMessageDto;
+import ru.liga.prerevolutionarytindercommon.dto.favorite.PageableFavoriteDto;
+import ru.liga.prerevolutionarytindercommon.dto.profile.PageableProfileDto;
 import ru.liga.prerevolutionarytindertgbotclient.model.UserProfile;
 
 @Service
@@ -70,50 +72,41 @@ public class UserProfileRestService {
         }
     }
 
-    public JsonNode searchProfiles(String userId, int page, int size) {
+    public PageableProfileDto searchProfiles(String userId, int page, int size) {
         String url = SERVER_URL + PROFILES_PATH + "/" + userId +
-                "/actions/search?page=" + page + "&size=" + size;
+                "/search?page=" + page + "&size=" + size;
         try {
-            ResponseEntity<String> response = this.restTemplate.getForEntity(url, String.class);
-            return getSimpleJsonResponseBody(response);
+            ResponseEntity<PageableProfileDto> response = this.restTemplate.getForEntity(url, PageableProfileDto.class);
+            return response.getBody();
         } catch (HttpStatusCodeException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public JsonNode searchFavorites(String userId, int page, int size) {
+    public PageableFavoriteDto searchFavorites(String userId, int page, int size) {
         String url = SERVER_URL + PROFILES_PATH + "/" + userId +
                 "/favorites?page=" + page + "&size=" + size;
 
         try {
-            ResponseEntity<String> response = this.restTemplate.getForEntity(url, String.class);
-            return getSimpleJsonResponseBody(response);
+            ResponseEntity<PageableFavoriteDto> response = this.restTemplate.getForEntity(url, PageableFavoriteDto.class);
+            return response.getBody();
         } catch (HttpStatusCodeException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public JsonNode postLike(String userId, String likedUserId) {
+    public MatchMessageDto postLike(String userId, String likedUserId) {
         String url = SERVER_URL + PROFILES_PATH + "/" + userId +
-                "/actions/like";
+                "/like";
         ObjectMapper jsonMapper = new ObjectMapper();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(jsonMapper.createObjectNode().put("likedUserId", Long.valueOf(likedUserId)).toString(), headers);
+        HttpEntity<LikeDto> entity = new HttpEntity<>(new LikeDto(Long.valueOf(likedUserId)), headers);
         try {
-            ResponseEntity<String> response = this.restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+            ResponseEntity<MatchMessageDto> response = this.restTemplate.exchange(url, HttpMethod.POST, entity, MatchMessageDto.class);
             log.info("Пользователь " + userId + " поставил лайк пользователю " + likedUserId);
-            return getSimpleJsonResponseBody(response);
+            return response.getBody();
         } catch (HttpStatusCodeException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private JsonNode getSimpleJsonResponseBody(ResponseEntity<String> responseEntity) {
-        ObjectMapper jsonMapper = new ObjectMapper();
-        try {
-            return jsonMapper.readTree(responseEntity.getBody());
-        } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }

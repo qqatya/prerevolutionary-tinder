@@ -13,6 +13,7 @@
 
     <properties>
         <java.version>17</java.version>
+        <prerevolutionary-tinder-common.version>0.0.1-SNAPSHOT</prerevolutionary-tinder-common.version>
     </properties>
     <dependencies>
         <dependency>
@@ -24,6 +25,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>31.1-jre</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.liga</groupId>
+            <artifactId>prerevolutionary-tinder-common</artifactId>
+            <version>${prerevolutionary-tinder-common.version}</version>
         </dependency>
     </dependencies>
 

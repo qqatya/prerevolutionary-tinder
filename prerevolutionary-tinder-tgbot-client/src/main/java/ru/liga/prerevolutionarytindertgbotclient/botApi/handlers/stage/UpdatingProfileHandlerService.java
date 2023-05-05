@@ -41,14 +41,6 @@ public class UpdatingProfileHandlerService implements StageHandler {
         userDataCache.saveUserProfile(userId, userDataCache.getUserProfile(userId));
         return replyToUser;
     }
-
-//    public void resetBotStateIfNeeded(long userId) {
-//        BotState currentBotState = userDataCache.getUserCurrentBotState(userId);
-//        if (currentBotState.equals(BotState.UPDATING_USER_PROFILE)) {
-//            userDataCache.setUserCurrentBotState(userId, BotState.ASK_GENDER);
-//        }
-//    }
-
     @Override
     public List<PartialBotApiMethod<?>> handle(BotApiObject apiObject, BotState botState) {
         if (apiObject instanceof Message) {
